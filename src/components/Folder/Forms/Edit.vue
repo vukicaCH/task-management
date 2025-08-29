@@ -4,12 +4,12 @@ import { useSpaceStore } from '@/stores/spaceStore'
 
 const props = defineProps({
     folder:{
-        type: Object,
-        required: true
+        type:Object,
+        required: true,
     }
 })
 
-const emit = defineEmits(['close'])
+const close = inject('close')
 
 const spaceStore = useSpaceStore()
 
@@ -20,10 +20,10 @@ const editFolder = (e) => {
 
     axiosIns
         .put(`folder/${props.folder.id}`, {name: folderName.value})
-        .then(()=>{
-            emit('close')
-            spaceStore.hydrateFolders(props.folder.space.id)
+        .then((res)=> {
+            spaceStore.replaceFolder(res.data)
         })
+        .then(() => close())
 }
 </script>
 

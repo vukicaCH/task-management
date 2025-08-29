@@ -1,18 +1,15 @@
 <script setup>
 import Folder from './Folder.vue';
-import { useSpaceStore } from '@/stores/spaceStore';
 
 const props = defineProps({
-    spaceId:{
-        type: String,
+    folders:{
+        type: Array,
         required: true
     }
 })
-
-const spaceStore = useSpaceStore()
 </script>
 
 
 <template>
-    <Folder v-for="folder in spaceStore.folders[spaceId]" :folder="folder" />
+    <Folder v-for="folder in folders" :folder="folder" />
 </template>

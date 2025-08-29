@@ -1,30 +1,37 @@
 <script setup>
 import axiosIns from '@/axios'
-import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 
-const emit = defineEmits(['close'])
+const props = defineProps({
+  list:{
+    type: Object,
+    required: true,
+  },
+})
+
+const close = inject('close')
 
 const spaceStore = useSpaceStore()
-const formsStore = useFormsStore()
 
-const listName = ref(spaceStore.currentList.name)
+const listName = ref(props.list.name)
 
 const editList = (e) => {
     e.preventDefault()
 
     axiosIns
-        .put(`list/${spaceStore.currentList.id}`, {name: listName.value})
-        .then((res) => {
+        .put(`list/${props.list.id}`, {name: listName.value})
+        .then(async (res) => {
             const {space, folder} = res.data;
 
+            spaceStore.currentList = res.data
+
             if(folder.hidden){
-                return spaceStore.hydrateFolderlessLists(space.id)
+                return spaceStore.hydrateLists(space.id)
             }else{
                 return spaceStore.hydrateFolderLists(folder.id)
             }
         })
-        .then(()=> formsStore.toggleForm())
+        .then(() => close())
 }
 </script>
 

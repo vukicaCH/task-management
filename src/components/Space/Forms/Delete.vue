@@ -1,20 +1,26 @@
 <script setup>
 import axiosIns from '@/axios'
-import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 
+const props = defineProps({
+    space: {
+        type: Object,
+        required: true,
+    }
+})
+
+const close = inject('close')
+
 const spaceStore = useSpaceStore()
-const formsStore = useFormsStore()
 
 const deleteSpace = (e) => {
     e.preventDefault()
 
     axiosIns
-        .delete(`/space/${spaceStore.currentSpace.id}`)
+        .delete(`/space/${props.space.id}`)
         .then(()=>{
-            formsStore.toggleForm()
-            spaceStore.hydrateSpaces()
-            spaceStore.currentSpace = null;
+            spaceStore.removeSpace(props.space.id)
+            close()
         })
 }
 </script>

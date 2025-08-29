@@ -1,13 +1,12 @@
 <script setup>
 import axiosIns from '@/axios'
-import { useFormsStore } from '@/stores/formsStore';
-import { useSpaceStore } from '@/stores/spaceStore'
+import { useSpaceStore } from '@/stores/spaceStore';
+
+const emit = defineEmits(['close'])
 
 const spaceStore = useSpaceStore();
-const formsStore = useFormsStore();
 
 const spaceName = ref('')
-
 
 const createSpace = (e) => {
     e.preventDefault()
@@ -15,9 +14,8 @@ const createSpace = (e) => {
     axiosIns
         .post('/team/90151303803/space', {name: spaceName.value})
         .then((res)=>{
-            spaceStore.currentSpace = res.data
-            spaceStore.spaces.push(res.data)
-            formsStore.toggleForm()
+            spaceStore.addSpace(res.data)
+            emit('close')
         })
 }
 </script>

@@ -1,23 +1,28 @@
 <script setup>
 import axiosIns from '@/axios'
-import { useFormsStore } from '@/stores/formsStore';
-import { useSpaceStore } from '@/stores/spaceStore'
+import { useSpaceStore } from '@/stores/spaceStore';
+
+const props = defineProps({
+    space:{
+        type: Object,
+        required: true,
+    }
+})
+
+const close = inject('close');
 
 const spaceStore = useSpaceStore();
-const formsStore = useFormsStore();
 
 const folderName = ref('')
 
 const createFolder = (e) => {
     e.preventDefault()
 
-    const spaceId = spaceStore.currentSpace.id
-
     axiosIns
-        .post(`space/${spaceId}/folder`, {name: folderName.value})
+        .post(`space/${props.space.id}/folder`, {name: folderName.value})
         .then((res)=>{
-            spaceStore.folders[spaceId].push(res.data)
-            formsStore.toggleForm()
+            spaceStore.addFolder(res.data)
+            close()
         })
 }
 </script>

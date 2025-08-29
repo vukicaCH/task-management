@@ -1,22 +1,31 @@
 <script setup>
 import axiosIns from '@/axios'
-import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 
-const spaceStore = useSpaceStore()
-const formsStore = useFormsStore()
+const props = defineProps({
+    space: {
+        type: Object,
+        required: true,
+    }
+})
 
-const spaceName = ref(spaceStore.currentSpace.name)
+const close = inject('close')
+
+const spaceStore = useSpaceStore()
+
+const spaceName = ref(props.space.name)
 
 
 const editSpace = (e) => {
     e.preventDefault()
 
     axiosIns
-        .put(`/space/${spaceStore.currentSpace.id}`, {name: spaceName.value})
+        .put(`/space/${props.space.id}`, {name: spaceName.value})
+        .then(res => {
+            return spaceStore.replaceSpace(res.data)
+        })
         .then(()=>{
-            formsStore.toggleForm()
-            spaceStore.hydrateSpaces()
+            close()
         })
 }
 </script>

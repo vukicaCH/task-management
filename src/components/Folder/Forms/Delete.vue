@@ -4,12 +4,12 @@ import { useSpaceStore } from '@/stores/spaceStore'
 
 const props = defineProps({
     folder:{
-        type: Object,
-        required: true
+        type:Object,
+        required: true,
     }
 })
 
-const emit = defineEmits(['close'])
+const close = inject('close')
 
 const spaceStore = useSpaceStore()
 
@@ -19,9 +19,8 @@ const deleteFolder = (e) => {
     axiosIns
         .delete(`folder/${props.folder.id}`)
         .then(()=>{
-            spaceStore.currentList = null;
-            emit('close')
-            spaceStore.hydrateFolders(props.folder.space.id)
+            spaceStore.removeFolder(props.folder)
+            close()
         })
 }
 </script>

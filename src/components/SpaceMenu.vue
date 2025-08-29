@@ -1,53 +1,59 @@
 <script setup>
 import Menu from 'primevue/menu';
-import { EllipsisHorizontalIcon } from '@heroicons/vue/24/outline'
-import { useFormsStore } from '@/stores/formsStore';
-import { useSpaceStore } from '@/stores/spaceStore';
+import { EllipsisHorizontalIcon, PlusIcon } from '@heroicons/vue/24/outline'
 
-const props = defineProps({
-    space:{
-        type:Object,
-        required: true,
-    }
-})
-
-const formsStore = useFormsStore()
-const spaceStore = useSpaceStore()
-
-const openEditSpaceForm = () => {
-    formsStore.toggleForm('EditSpace', 'Edit Space')
-}
-
-const openDeleteSpaceForm = () => {
-    formsStore.toggleForm('DeleteSpace', 'Delete Space')
-}
+const open = inject('open')
 
 const menu = ref();
+const addMenu = ref();
 
-const items = ref([
+const menuItems = ref([
     {
         label: 'Space',
         items: [
             {
                 label: 'Edit',
-                command: () => openEditSpaceForm()
+                command: () => open('Edit')
             },
             {
                 label: 'Delete',
-                command: () => openDeleteSpaceForm()
+                command: () => open('Delete')
             }
         ]
     }
 ]);
 
-const toggle = (event) => {
-    spaceStore.currentSpace = props.space;
-    menu.value.toggle(event);
+const addMenuItems = ref([
+    {
+        label: 'Add',
+        items: [
+            {
+                label: 'Folder',
+                command: () => open('CreateFolder')
+            },
+            {
+                label: 'List',
+                command: () => open('CreateList')
+            }
+        ]
+    }
+]);
+
+const toggle = (event, isAddMenu = false) => {
+    isAddMenu ? addMenu.value.toggle(event) : menu.value.toggle(event);
 };
 
 </script>
 
 <template>
-    <button @click="toggle" aria-haspopup="true" aria-controls="overlay_menu"><EllipsisHorizontalIcon class="w-5 h-5" /></button>
-    <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
+    <button @click="(e) => toggle(e)" aria-haspopup="true" aria-controls="overlay_menu" class="cursor-pointer hover:text-gray-200">
+        <EllipsisHorizontalIcon class="w-5 h-5" />
+    </button>
+
+    <button @click="(e) => toggle(e, true)" aria-haspopup="true" aria-controls="overlay_add_menu" class="cursor-pointer hover:text-gray-200">
+        <PlusIcon class="w-5 h-5" />
+    </button>
+    
+    <Menu ref="menu" id="overlay_menu" :model="menuItems" :popup="true" />
+    <Menu ref="addMenu" id="overlay_add_menu" :model="addMenuItems" :popup="true" />
 </template>

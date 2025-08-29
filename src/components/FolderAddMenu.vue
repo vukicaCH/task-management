@@ -11,26 +11,26 @@ const items = ref([
         label: 'Add',
         items: [
             {
-                label: 'Folder',
-                command: () => open('CreateFolder')
+                label: 'List',
+                command: () => open('Create')
             },
             {
-                label: 'List',
-                command: () => open('CreateList')
+                label: 'Document',
+                command: () => {}
             }
         ]
     }
 ]);
 
-const toggle = (event) => {
-    menu.value.toggle(event);
-};
+const toggle = (event) => menu.value.toggle(event)
 
 </script>
 
 <template>
-    <button @click="toggle" aria-haspopup="true" aria-controls="overlay_menu">
+
+    <button @click="(e) => toggle(e)" aria-haspopup="true" aria-controls="overlay_menu">
         <span class="flex items-center gap-2 cursor-pointer text-sm"><PlusIcon class="w-4 h-4" /> Add Item</span>
     </button>
+
     <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
 </template>

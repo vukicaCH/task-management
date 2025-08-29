@@ -1,12 +1,11 @@
 <script setup>
 import Sidebar from './components/Sidebar.vue';
-import Form from './components/Forms/Form.vue';
+import Content from './components/Content/Content.vue';
 </script>
 
 <template>
-  <Form />
-
-  <div class="grid grid-cols-4 px-5">
+  <div class="grid grid-cols-5 gap-8 px-5">
     <Sidebar />
+    <Content class="col-span-4" />
   </div>
 </template>
