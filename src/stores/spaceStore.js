@@ -11,7 +11,8 @@ export const useSpaceStore = defineStore('SpaceStore',{
             space:{},
             folder:{}
         },
-        loading: false
+        loading: false,
+        ready: false,
     }),
 
     actions: {
@@ -25,8 +26,9 @@ export const useSpaceStore = defineStore('SpaceStore',{
                         .then(() => {
                             return Promise.allSettled(this.spaces.map( async space => await this.hydrateSpaceItems(space.id)))
                         }).then(() => {
-                            this.currentSpace = this.spaces[1];
+                            this.currentSpace = this.spaces[0];
                             this.loading = false
+                            this.ready = true;
                         })
         },
 

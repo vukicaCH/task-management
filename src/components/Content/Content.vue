@@ -7,7 +7,7 @@ const spaceStore = useSpaceStore();
 </script>
 
 <template>
-    <div v-if="!spaceStore.loading" class="rounded-lg border border-white p-3">
+    <div v-if="spaceStore.ready" class="rounded-lg border border-white p-3">
         <Breadcrumbs />
         <Tabs />
     </div>

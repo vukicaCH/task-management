@@ -19,7 +19,7 @@ const deleteList = (e) => {
     axiosIns
         .delete(`list/${props.list.id}`)
         .then(()=> {
-            if(!folder.hidden){
+            if(!props.list.folder.hidden){
                 spaceStore.removeListFromFolder(props.list)
             }else{
                 spaceStore.removeListFromSpace(props.list)

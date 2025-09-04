@@ -4,13 +4,16 @@ import TabList from 'primevue/tablist';
 import Tab from 'primevue/tab';
 import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
-import Overview from './Overview.vue';
+import SpaceOverview from './Overview/Space.vue';
+import SpaceList from './List/Space.vue';
+
+
 
 </script>
     
 <template>
     <div class="card">
-        <Tabs value="0">
+        <Tabs value="0" :lazy="true">
             <TabList>
                 <Tab value="0">Overview</Tab>
                 <Tab value="1">List</Tab>
@@ -18,13 +21,10 @@ import Overview from './Overview.vue';
             </TabList>
             <TabPanels>
                 <TabPanel value="0">
-                    <Overview />
+                    <SpaceOverview />
                 </TabPanel>
                 <TabPanel value="1">
-                    <p class="m-0">
-                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
-                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
-                    </p>
+                    <SpaceList />
                 </TabPanel>
                 <TabPanel value="2">
                     <p class="m-0">

@@ -25,11 +25,6 @@ const lists = computed(() => spaceStore.lists.folder[props.folder.id])
 
 const toggleFolderOpen = () => open.value = !open.value
 
-const openCreateListForm = () => {
-    currentForm.value = 'Create'
-    visible.value = true;
-}
-
 const setCurrentFolder = () => {
     open.value = true
     spaceStore.setCurrentFolder(props.folder, true)
