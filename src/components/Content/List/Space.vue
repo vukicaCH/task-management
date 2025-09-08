@@ -1,15 +1,13 @@
 <script setup>
 import { useSpaceStore } from '@/stores/spaceStore';
 import { useTasksStore } from '@/stores/tasksStore';
-import Panel from 'primevue/panel';
-import { ChevronDownIcon, ChevronLeftIcon } from '@heroicons/vue/24/solid';
-import TaskList from './TaskList.vue';
 import ColumnChooser from './ColumnChooser.vue';
+import TaskList from './TaskList.vue';
+import { Panel } from 'primevue';
+import { ChevronLeftIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
+import { onBeforeMount } from 'vue';
 
-const spaceStore = useSpaceStore()
-const tasksStore = useTasksStore();
-
-const visible = ref(false)
+const spaceStore = useSpaceStore();
 
 const allListsInSpace = computed(() => {
     const spaceId = spaceStore.currentSpace?.id
@@ -20,9 +18,10 @@ const allListsInSpace = computed(() => {
     
     spaceStore.folders[spaceId].forEach(folder => spaceStore.lists.folder[folder.id].map(list => allFolderLists.push(list)))
 
-
     return [...allSpaceLists, ...allFolderLists];
 })
+
+const tasksStore = useTasksStore()
 
 const getTasksForList = (listId) => {
     if(!(listId in tasksStore.tasks)) tasksStore.hydrateTasks(listId)
@@ -33,13 +32,15 @@ const onCollapse = (collapsed, listId) => {
         getTasksForList(listId)
     }
 }
+
+onMounted(() => tasksStore.hydrateViewTasks())
 </script>
 
 <template>
     <div class="!space-y-2">
         <ColumnChooser />
 
-        <Panel v-for="list in allListsInSpace" :header="list.name" toggleable :collapsed="true" @update:collapsed="(collapsed) => onCollapse(collapsed, list.id)">
+        <Panel v-for="list in allListsInSpace" :key="list.id" :header="list.name" toggleable :collapsed="true" @update:collapsed="(collapsed) => onCollapse(collapsed, list.id)">
             <template #header>
                 <div class="flex flex-col">
                     <span class="text-xs text-gray-400"><span v-if="!list.folder.hidden">{{ list.folder.name }} / </span>{{ list.name }}</span>

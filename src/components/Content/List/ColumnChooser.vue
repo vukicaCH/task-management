@@ -23,6 +23,7 @@ const columns = [
     'status',
     'tags',
     'time_estimate',
+    'checklists'
 ]
 
 const getColName = (col) => {

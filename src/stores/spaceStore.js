@@ -30,6 +30,17 @@ export const useSpaceStore = defineStore('SpaceStore',{
                             this.loading = false
                             this.ready = true;
                         })
+                        .then(()=> {
+                            axiosIns.post('team/90151303803/view',{
+                                type: 'list',
+                                columns: {fields: [{
+                                    field: 'commentCount',
+                                    name: 'commentCount',
+                                    display: true
+                                }]}
+                            })
+                            .then(res => console.log(res))
+                        })
         },
 
         async hydrateFolders(spaceId){

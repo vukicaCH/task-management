@@ -1,7 +1,6 @@
 import './assets/main.css'
 import PrimeVue from 'primevue/config'
-import Aura from '@primeuix/themes/aura';
-
+import Lara from '@primeuix/themes/lara';
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
@@ -11,11 +10,9 @@ const app = createApp(App);
 app
 .use(PrimeVue, {
     theme: {
-        preset: Aura,
-        options: {
-            prefix: 'p',
-            darkModeSelector: 'system',
-            cssLayer: false
+        preset: Lara,
+        options:{
+            darkModeSelector: '.my-app-dark',
         }
     }
  })

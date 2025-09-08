@@ -22,6 +22,12 @@ export const useTasksStore = defineStore('TasksStore',{
                     this.loading = false
                     this.listId = null
                 })
+        },
+
+        hydrateViewTasks(){
+            axiosIns
+                .get('view/2kypzekv-1275/task')
+                .then(res => console.log(res))
         }
     }
 })

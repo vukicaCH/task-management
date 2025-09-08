@@ -1,6 +1,7 @@
 <script setup>
 import Sidebar from './components/Sidebar.vue';
 import Content from './components/Content/Content.vue';
+import { Button } from 'primevue';
 </script>
 
 <template>
