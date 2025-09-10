@@ -1,29 +1,26 @@
 <script setup>
 import { MultiSelect } from 'primevue';
 import { useTasksStore } from '@/stores/tasksStore';
-import { useSpaceStore } from '@/stores/spaceStore';
-
-const props = defineProps({
-    task:{
-        type: Object,
-        required: true
-    }
-})
-
-const linkedTasks = defineModel('linkedTasks')
+import { watchEffect } from 'vue';
 
 const tasksStore = useTasksStore()
-const spaceStore = useSpaceStore()
 
-const tasks = computed(() => {
-    return tasksStore.tasks[props.task.list.id]
-})
+const tasks = defineModel('tasks');
+
+const showLinkedTask = (linkedTask) => {
+    return tasksStore.listViewTasks.find(task => task.id === linkedTask.task_id)
+}
 </script>
 
 <template>
     <MultiSelect
-        v-model="linkedTasks"
-        :options="tasks"
+        v-model="tasks"
+        :options="tasksStore.listViewTasks"
         option-label="name"
-    />
+        option-value="id"
+    >
+        <template #value="{value}">
+            <span v-for="linkedTask in value">{{ linkedTask.task_id ?? linkedTask.id }}</span>
+        </template>
+    </MultiSelect>
 </template>

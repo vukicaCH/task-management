@@ -3,28 +3,36 @@ import { Dialog } from 'primevue';
 import ToggleSwitch from 'primevue/toggleswitch';
 import { ViewColumnsIcon } from '@heroicons/vue/24/outline';
 import { useTasksStore } from '@/stores/tasksStore';
+import { useSpaceStore } from '@/stores/spaceStore';
 
+const spaceStore = useSpaceStore();
 const tasksStore = useTasksStore()
 
-const columns = [
-    'archived',
-    'checklists',
-    'creator',
-    'date_closed',
-    'date_created',
-    'date_done',
-    'date_updated',
-    'due_date',
-    'linked_tasks',
-    'locations',
-    'name',
-    'priority',
-    'start_date',
-    'status',
-    'tags',
-    'time_estimate',
-    'checklists'
-]
+const columns = computed(() => {
+
+    const cols = [
+        'archived',
+        'creator',
+        'date_closed',
+        'date_created',
+        'date_done',
+        'date_updated',
+        'due_date',
+        'linked_tasks',
+        'name',
+        'priority',
+        'start_date',
+        'status'
+    ];
+
+    const space = spaceStore.currentSpace;
+
+    if(space.features.tags.enabled) cols.push('tags');
+    if(space.features.checklists.enabled) cols.push('checklists');
+    if(space.features.due_dates.enabled) cols.push('due_date');
+
+    return cols
+})
 
 const getColName = (col) => {
     return col.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');

@@ -13,6 +13,7 @@ export const useSpaceStore = defineStore('SpaceStore',{
         },
         loading: false,
         ready: false,
+        views:[],
     }),
 
     actions: {
@@ -29,17 +30,6 @@ export const useSpaceStore = defineStore('SpaceStore',{
                             this.currentSpace = this.spaces[0];
                             this.loading = false
                             this.ready = true;
-                        })
-                        .then(()=> {
-                            axiosIns.post('team/90151303803/view',{
-                                type: 'list',
-                                columns: {fields: [{
-                                    field: 'commentCount',
-                                    name: 'commentCount',
-                                    display: true
-                                }]}
-                            })
-                            .then(res => console.log(res))
                         })
         },
 
@@ -190,5 +180,9 @@ export const useSpaceStore = defineStore('SpaceStore',{
 
             return this.hydrateSpaceItems(space.id)
         },
+
+        async getViews(){
+            axiosIns.get('team/90151303803/view').then(res => this.views.list = res.data.required_views.list)
+        }
     }
 })

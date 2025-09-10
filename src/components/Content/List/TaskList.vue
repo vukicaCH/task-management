@@ -6,10 +6,10 @@ import { useTasksStore } from '@/stores/tasksStore';
 import dayjs from 'dayjs';
 import TaskStatusSelect from './TaskStatusSelect.vue';
 import TaskListLinkedTasksEditor from './TaskListLinkedTasksEditor.vue';
-import axiosIns from '@/axios';
 import { Bars3BottomLeftIcon } from '@heroicons/vue/24/solid';
 import { Dialog } from 'primevue';
 import TaskListTimePickerEditor from './TaskListTimePickerEditor.vue';
+import TaskListLinkedTasks from './TaskListLinkedTasks.vue';
 
 const props = defineProps({
     listId:{
@@ -98,12 +98,16 @@ const onRowEditSave = (event) => {
                     {{ data[field].status }}
                 </div>
                 <div v-else-if="field === 'linked_tasks'">
-                    <div class="flex flex-col !space-y-1">
-                        <span v-for="linkedTask in data[field]">{{ linkedTask.name }}</span>
-                    </div>
+                    <TaskListLinkedTasks :linkedTasks="data[field]" />
                 </div>
-                <div v-else-if="field === 'checklists'">
-                    {{ data[field] }}
+                <div v-else-if="field === 'creator'">
+                    {{ data[field].username }}
+                </div>
+                <div v-else-if="field === 'archived'">
+                    <span>{{ data[field] ? 'Yes' : 'No' }}</span>
+                </div>
+                <div v-else-if="field === 'tags'">
+                    <span>TAGS BABY</span>
                 </div>
                 <div v-else>{{ data[field] }}</div>
             </template>
@@ -111,11 +115,14 @@ const onRowEditSave = (event) => {
                 <div v-if="['due_date', 'start_date'].includes(field)">
                     <TaskListTimePickerEditor v-model:date="data[field]" />
                 </div>
-                <div v-if="field === 'status'">
+                <div v-else-if="field === 'status'">
                     <TaskStatusSelect v-model:status="data[field]" :task="data" />
                 </div>
-                <div v-if="field === 'linked_tasks'">
-                    <TaskListLinkedTasksEditor v-model:linkedTasks="data[field]" :task="data" />
+                <div v-else-if="field === 'linked_tasks'">
+                    <TaskListLinkedTasks :linkedTasks="data[field]" :open-edit-linked-tasks="true" />
+                </div>
+                <div v-else>
+                    <InputText v-model="data[field]" />
                 </div>
             </template>
         </Column>

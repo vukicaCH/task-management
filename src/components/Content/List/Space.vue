@@ -5,7 +5,6 @@ import ColumnChooser from './ColumnChooser.vue';
 import TaskList from './TaskList.vue';
 import { Panel } from 'primevue';
 import { ChevronLeftIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
-import { onBeforeMount } from 'vue';
 
 const spaceStore = useSpaceStore();
 
@@ -33,7 +32,9 @@ const onCollapse = (collapsed, listId) => {
     }
 }
 
-onMounted(() => tasksStore.hydrateViewTasks())
+onMounted(()=> {
+    tasksStore.hydrateListViewTasks();
+})
 </script>
 
 <template>
