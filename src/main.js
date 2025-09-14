@@ -4,6 +4,7 @@ import Lara from '@primeuix/themes/lara';
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
+import Tooltip from 'primevue/tooltip';
 
 const app = createApp(App);
 
@@ -17,5 +18,7 @@ app
     }
  })
  .use(createPinia());
+
+ app.directive('tooltip', Tooltip);
 
  app.mount('#app')

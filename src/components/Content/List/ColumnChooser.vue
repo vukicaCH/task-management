@@ -17,7 +17,6 @@ const columns = computed(() => {
         'date_created',
         'date_done',
         'date_updated',
-        'due_date',
         'linked_tasks',
         'name',
         'priority',
@@ -28,7 +27,6 @@ const columns = computed(() => {
     const space = spaceStore.currentSpace;
 
     if(space.features.tags.enabled) cols.push('tags');
-    if(space.features.checklists.enabled) cols.push('checklists');
     if(space.features.due_dates.enabled) cols.push('due_date');
 
     return cols

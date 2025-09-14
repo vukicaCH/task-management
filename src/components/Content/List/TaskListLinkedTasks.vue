@@ -1,21 +1,13 @@
 <script setup>
 import { useTasksStore } from '@/stores/tasksStore';
-import { useFormsStore } from '@/stores/formsStore';
+import { onRenderTriggered } from 'vue';
 
 const props = defineProps({
     linkedTasks:{
         type: Array,
         required: true
-    },
-
-    openEditLinkedTasks:{
-        type: Boolean,
-        required: false,
-        default: false,
     }
 })
-
-const formsStore = useFormsStore()
 
 const linkedTasksRef = toRef(()=> props.linkedTasks)
 
@@ -23,38 +15,36 @@ const tasksStore = useTasksStore()
 
 const linkedTasksInfo = ref([])
 
+watch(linkedTasksRef, () => console.log(linkedTasksRef.value))
+
 watchEffect(()=> {
     const tasksInfo = [];
-    const linkedTasksIds = linkedTasksRef.value.map(linkedTask => linkedTask.task_id);
+    const linkedTasksIds = linkedTasksRef.value.map(linkedTask => linkedTask.link_id);
 
     tasksStore.listViewTasks.map(task => linkedTasksIds.includes(task.id) ? tasksInfo.push(task) : null)
 
     linkedTasksInfo.value = [...tasksInfo];
 })
 
-const openEditLinkedTasksForm = () => {
-    formsStore.toggleForm('EditLinkedTasks')
-}
+const openForm = inject('openForm')
 </script>
 
 <template>
-    <div @click="() => { if(openEditLinkedTasks) openEditLinkedTasksForm() }">
-        <div v-if="linkedTasksInfo.length" class="flex gap-1">
+    <div @click="() => openForm('EditLinkedTasks')">
+        <div v-if="linkedTasksInfo.length" class="flex gap-1 items-start">
             <div
-                class="px-2 py-1 rounded-full text-xs bg-gray-300 text-gray-700"
-                :class="{'hover:bg-gray-400 cursor-pointer' : openEditLinkedTasks}"
+                class="px-2 py-1 rounded-full text-xs bg-gray-300 text-gray-700 hover:bg-gray-400 cursor-pointer"
                 v-for="task in linkedTasksInfo.slice(0,2)"
             >
-                {{ task.name }}
+                {{ task.name.length > 6 ? task.name.slice(0,7) + '...' : task.name }}
             </div>
             <div
-                class="px-2 py-1 rounded-full text-xs bg-gray-300 text-gray-700"
-                :class="{'hover:bg-gray-400 cursor-pointer' : openEditLinkedTasks}"
+                class="px-2 py-1 rounded-full text-xs bg-gray-300 text-gray-700 hover:bg-gray-400 cursor-pointer"
                 v-if="linkedTasks.slice(1).length"
             >
                 {{ `+${linkedTasks.slice(1).length - 1}` }}
             </div>
         </div>
-        <div v-else :class="{'!font-medium hover:text-gray-500 cursor-pointer border p-3 rounded-md' : openEditLinkedTasks}">Add +</div>
+        <div v-else class="!font-medium hover:text-gray-500 cursor-pointer border p-3 rounded-md w-[100px] text-center">Add +</div>
     </div>
 </template>
