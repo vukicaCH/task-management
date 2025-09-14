@@ -13,6 +13,8 @@ import TaskListTagsEditor from './TaskListTagsEditor.vue';
 import { provide } from 'vue';
 import { Select } from 'primevue';
 import axiosIns from '@/axios';
+import _ from 'lodash';
+import TaskListPriority from './TaskListPriority.vue';
 
 const props = defineProps({
     listId:{
@@ -75,6 +77,10 @@ const editingRows = ref([])
 const onRowEditSave = (event) => {
     let { newData, index } = event;
 
+    const changedTask = {...tasks.value[index]};
+
+    if(_.isEqual(newData, changedTask)) return
+
     tasks.value[index] = newData
 
     const dataToBeSent = {};
@@ -90,9 +96,12 @@ const onRowEditSave = (event) => {
 
     dataToBeSent['status'] = newData.status.status
 
+    tasksStore.listId = props.listId;
+    tasksStore.loading = true;
+
     axiosIns
         .put(`/task/${newData.id}`, dataToBeSent)
-        .then(res => tasksStore.hydrateTasks(props.listId)) 
+        .then(() => tasksStore.hydrateTasks(props.listId)) 
 };
 
 const openEditor = (e, field, editorInitCallback) => {
@@ -163,6 +172,9 @@ provide('openForm', openForm)
                         <div v-else-if="field === 'tags'">
                             <TaskListTagsEditor :tags="data[field]" />
                         </div>
+                        <div v-else-if="field === 'priority'">
+                            <TaskListPriority v-model:priority="data[field]" />
+                        </div>
                         <div v-else>{{ data[field] }}</div>
                     </div>
                     <div
@@ -196,6 +208,9 @@ provide('openForm', openForm)
                         option-label="label"
                         option-value="value"
                     />
+                </div>
+                <div v-else-if="field === 'priority'">
+                    <TaskListPriority v-model:priority="data[field]" :edit-mode="true" />
                 </div>
                 <div v-else>
                     <InputText v-model="data[field]" />

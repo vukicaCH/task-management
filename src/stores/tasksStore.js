@@ -8,7 +8,7 @@ export const useTasksStore = defineStore('TasksStore',{
         },
         loading: false,
         listId: null,
-        columns:['name', 'status', 'tags','date_created','start_date'],
+        columns:['name', 'priority'],
         listViewTasks:[]
     }),
 
