@@ -95,6 +95,7 @@ const onRowEditSave = (event) => {
     }
 
     dataToBeSent['status'] = newData.status.status
+    dataToBeSent['priority'] = newData.priority.id
 
     tasksStore.listId = props.listId;
     tasksStore.loading = true;
@@ -110,8 +111,9 @@ const openEditor = (e, field, editorInitCallback) => {
     else editorInitCallback(e)
 }
 
-const openForm = (formName) => {
+const openForm = (formName, task) => {
     formsStore.toggleForm(formName);
+    formsStore.$patch({task})
 }
 
 provide('openForm', openForm)
@@ -161,7 +163,7 @@ provide('openForm', openForm)
                             {{ data[field].status }}
                         </div>
                         <div v-else-if="field === 'linked_tasks'">
-                            <TaskListLinkedTasks :linkedTasks="data[field]" />
+                            <TaskListLinkedTasks :linkedTasks="data[field]" :task="data" />
                         </div>
                         <div v-else-if="field === 'creator'">
                             {{ data[field].username }}
@@ -193,7 +195,7 @@ provide('openForm', openForm)
                     <TaskStatusSelect v-model:status="data[field]" :task="data" />
                 </div>
                 <div v-else-if="field === 'linked_tasks'">
-                    <TaskListLinkedTasks :linkedTasks="data[field]" :open-edit-linked-tasks="true" />
+                    <TaskListLinkedTasks :linkedTasks="data[field]" :task="data" />
                 </div>
                 <div v-else-if="field === 'tags'">
                     <TaskListTagsEditor :tags="data[field]" />

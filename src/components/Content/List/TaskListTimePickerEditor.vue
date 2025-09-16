@@ -21,5 +21,6 @@ const date = defineModel('date');
         :clear-button-props="{hidden: !date}"
         @clear-click="date = ''"
         :disabled="disabled"
+        placeholder="Select Date..."
     />
 </template>

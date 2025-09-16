@@ -1,7 +1,5 @@
 <script setup>
-import { Select, Tag } from 'primevue';
-import plugin from 'primevue/config';
-import { watchEffect } from 'vue';
+import { Select } from 'primevue';
 
 const props = defineProps({
     editMode:{
@@ -38,7 +36,6 @@ const priorityTextAndColor = computed(() => {
         <Select
             v-model="priority"
             :options="options"
-            option-value="id"
             placeholder="Select Priority..."
             showClear
         >
