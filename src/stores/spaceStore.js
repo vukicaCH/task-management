@@ -182,7 +182,9 @@ export const useSpaceStore = defineStore('SpaceStore',{
         },
 
         async getViews(){
-            axiosIns.get('team/90151303803/view').then(res => this.views.list = res.data.required_views.list)
+            axiosIns.get('team/90151303803/view').then(res => {
+                this.views.list = res.data.required_views.list
+            })
         }
     }
 })

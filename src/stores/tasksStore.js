@@ -1,5 +1,4 @@
 import axiosIns from "@/axios";
-import { useSpaceStore } from "./spaceStore";
 
 export const useTasksStore = defineStore('TasksStore',{
     state: ()=> ({
@@ -9,7 +8,7 @@ export const useTasksStore = defineStore('TasksStore',{
         loading: false,
         listId: null,
         columns:['name', 'linked_tasks'],
-        listViewTasks:[]
+        allTasks:[]
     }),
 
     actions:{
@@ -26,11 +25,10 @@ export const useTasksStore = defineStore('TasksStore',{
                 })
         },
 
-        hydrateListViewTasks(){
-            const spaceStore = useSpaceStore()
-            const listViewId = spaceStore.views.list.id;
-
-            axiosIns.get(`/view/${listViewId}/task`).then(res => this.listViewTasks = res.data.tasks)
+        getAllTasks(){
+            axiosIns.get(`/team/90151303803/task?include_closed=true`).then(res => {
+                this.allTasks = res.data.tasks
+            })
         }
     }
 })

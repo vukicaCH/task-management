@@ -24,7 +24,7 @@ watchEffect(()=> {
     const tasksInfo = [];
     const linkedTasksIds = linkedTasksRef.value.map(linkedTask => linkedTask.link_id);
 
-    tasksStore.listViewTasks.map(task => linkedTasksIds.includes(task.id) ? tasksInfo.push(task) : null)
+    tasksStore.allTasks.map(task => linkedTasksIds.includes(task.id) ? tasksInfo.push(task) : null)
 
     linkedTasksInfo.value = [...tasksInfo];
 })
@@ -37,7 +37,7 @@ const openForm = inject('openForm')
         <div v-if="linkedTasksInfo.slice(1).length" class="flex gap-1 items-start">
             <div
                 class="px-2 py-1 rounded-full text-xs bg-gray-300 text-gray-700 hover:bg-gray-400 cursor-pointer"
-                v-for="task in linkedTasksInfo.slice(1,2)"
+                v-for="task in linkedTasksInfo.slice(0,2)"
             >
                 {{ task.name.length > 6 ? task.name.slice(0,7) + '...' : task.name }}
             </div>

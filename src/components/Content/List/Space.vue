@@ -33,7 +33,7 @@ const onCollapse = (collapsed, listId) => {
 }
 
 onMounted(()=> {
-    tasksStore.hydrateListViewTasks();
+    tasksStore.getAllTasks();
 })
 </script>
 

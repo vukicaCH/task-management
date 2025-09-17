@@ -1,7 +1,7 @@
 <script setup>
 import { useFormsStore } from '@/stores/formsStore';
 import { useTasksStore } from '@/stores/tasksStore';
-import { MultiSelect } from 'primevue';
+import Listbox from 'primevue/listbox';
 
 const formsStore = useFormsStore()
 const tasksStore = useTasksStore()
@@ -9,14 +9,15 @@ const tasksStore = useTasksStore()
 const linkedTasks = ref([]);
 
 onMounted(() => {
-    const tasks = formsStore.task.linked_tasks.map(linkedTask => tasksStore.listViewTasks.find(task => task.id === linkedTask.link_id))
+    const links = formsStore.task.linked_tasks.map(link => link.link_id)
+    const ids = formsStore.task.linked_tasks.map(link => link.task_id)
 
-    console.log(tasksStore.listViewTasks)
+    const tasks = tasksStore.allTasks.filter(task => links.includes(task.id) || ids.includes(task.id))
 
-    linkedTasks.value = tasks
+    linkedTasks.value = tasks.map(task => task.id)
 })
 
-const linkTasks = () => {
+const toggleLink = (task, linked) => {
 
 }
 
@@ -28,18 +29,15 @@ const linkTasks = () => {
             Linked tasks:
         </p>
 
-        <form @submit="linkTasks">
-            <MultiSelect
-                v-model="linkedTasks"
-                :options="tasksStore.listViewTasks"
-                option-label="name"
-                option-value="id"
-                placeholder="Choose Tasks..."
-            />
-
-            <div>
-                <button type="submit">Submit</button>
-            </div>
-        </form>
+        <Listbox
+            v-model="linkedTasks"
+            :options="tasksStore.allTasks"
+            placeholder="Choose Tasks..."
+            option-label="name"
+            option-value="id"
+            multiple
+        >
+            <template #option="{option, selected}"><span @click="">{{ option.name }}</span></template>
+        </Listbox>
     </div>
 </template>
