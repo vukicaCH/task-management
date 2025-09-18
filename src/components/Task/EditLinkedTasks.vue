@@ -1,7 +1,9 @@
 <script setup>
+import axiosIns from '@/axios';
 import { useFormsStore } from '@/stores/formsStore';
 import { useTasksStore } from '@/stores/tasksStore';
 import Listbox from 'primevue/listbox';
+import _ from 'lodash';
 
 const formsStore = useFormsStore()
 const tasksStore = useTasksStore()
@@ -17,16 +19,12 @@ onMounted(() => {
     linkedTasks.value = tasks.map(task => task.id)
 })
 
-const toggleLink = (task, linked) => {
-
-}
-
 </script>
 
 <template>
     <div>
-        <p class="text-surface-500 dark:text-surface-400">
-            Linked tasks:
+        <p class="text-surface-500 dark:text-surface-400 !mb-3">
+            Linked tasks for <i>"{{ formsStore.task.name }}"</i>:
         </p>
 
         <Listbox
@@ -36,8 +34,11 @@ const toggleLink = (task, linked) => {
             option-label="name"
             option-value="id"
             multiple
+            :option-disabled="(option) => option.id === formsStore.task.id"
         >
-            <template #option="{option, selected}"><span @click="">{{ option.name }}</span></template>
+            <template #option="{option, selected}">
+                <div class="w-full" @click="() => tasksStore.toggleTaskLink(option.id, formsStore.task.id, selected)">{{ option.name }} ({{ option.id }})</div>
+            </template>
         </Listbox>
     </div>
 </template>

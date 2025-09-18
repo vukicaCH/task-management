@@ -12,7 +12,6 @@ import TaskListLinkedTasks from './TaskListLinkedTasks.vue';
 import TaskListTagsEditor from './TaskListTagsEditor.vue';
 import { provide } from 'vue';
 import { Select } from 'primevue';
-import axiosIns from '@/axios';
 import _ from 'lodash';
 import TaskListPriority from './TaskListPriority.vue';
 
@@ -83,26 +82,7 @@ const onRowEditSave = (event) => {
 
     tasks.value[index] = newData
 
-    const dataToBeSent = {};
-
-    for(const [key, value] of Object.entries(newData)){
-        if(key.includes('date')){
-            dataToBeSent[key] = dayjs(value).valueOf()
-        }
-        else{
-            dataToBeSent[key] = value
-        }
-    }
-
-    dataToBeSent['status'] = newData.status.status
-    dataToBeSent['priority'] = newData.priority.id
-
-    tasksStore.listId = props.listId;
-    tasksStore.loading = true;
-
-    axiosIns
-        .put(`/task/${newData.id}`, dataToBeSent)
-        .then(() => tasksStore.hydrateTasks(props.listId)) 
+    tasksStore.editTask(newData)
 };
 
 const openEditor = (e, field, editorInitCallback) => {
@@ -163,7 +143,7 @@ provide('openForm', openForm)
                             {{ data[field].status }}
                         </div>
                         <div v-else-if="field === 'linked_tasks'">
-                            <TaskListLinkedTasks :linkedTasks="data[field]" :task="data" />
+                            <TaskListLinkedTasks :task="data" />
                         </div>
                         <div v-else-if="field === 'creator'">
                             {{ data[field].username }}
@@ -195,7 +175,7 @@ provide('openForm', openForm)
                     <TaskStatusSelect v-model:status="data[field]" :task="data" />
                 </div>
                 <div v-else-if="field === 'linked_tasks'">
-                    <TaskListLinkedTasks :linkedTasks="data[field]" :task="data" />
+                    <TaskListLinkedTasks :task="data" />
                 </div>
                 <div v-else-if="field === 'tags'">
                     <TaskListTagsEditor :tags="data[field]" />
