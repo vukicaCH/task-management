@@ -14,6 +14,7 @@ export const useSpaceStore = defineStore('SpaceStore',{
         loading: false,
         ready: false,
         views:[],
+        tags:{}
     }),
 
     actions: {
@@ -185,6 +186,12 @@ export const useSpaceStore = defineStore('SpaceStore',{
             axiosIns.get('team/90151303803/view').then(res => {
                 this.views.list = res.data.required_views.list
             })
+        },
+
+        hydrateSpaceTags(spaceId){
+            axiosIns
+                .get(`space/${spaceId}/tag`)
+                .then(res => this.tags[spaceId] = res.data.tags)
         }
     }
 })

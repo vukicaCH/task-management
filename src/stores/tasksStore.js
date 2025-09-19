@@ -8,7 +8,7 @@ export const useTasksStore = defineStore('TasksStore',{
         },
         loading: false,
         listId: null,
-        columns:['name', 'linked_tasks'],
+        columns:['name', 'linked_tasks', 'tags'],
         allTasks:[]
     }),
 

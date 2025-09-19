@@ -152,7 +152,7 @@ provide('openForm', openForm)
                             <span>{{ data[field] ? 'Yes' : 'No' }}</span>
                         </div>
                         <div v-else-if="field === 'tags'">
-                            <TaskListTagsEditor :tags="data[field]" />
+                            <TaskListTagsEditor :task="data" />
                         </div>
                         <div v-else-if="field === 'priority'">
                             <TaskListPriority v-model:priority="data[field]" />
@@ -178,7 +178,7 @@ provide('openForm', openForm)
                     <TaskListLinkedTasks :task="data" />
                 </div>
                 <div v-else-if="field === 'tags'">
-                    <TaskListTagsEditor :tags="data[field]" />
+                    <TaskListTagsEditor :task="data" />
                 </div>
                 <div v-else-if="field === 'creator'">
                     {{ data[field].username }}

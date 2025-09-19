@@ -1,7 +1,5 @@
 <script setup>
-import axiosIns from '@/axios';
 import { useTasksStore } from '@/stores/tasksStore';
-import { watchEffect } from 'vue';
 
 const props = defineProps({
     task: {
