@@ -1,5 +1,7 @@
 import axiosIns from "@/axios";
 import dayjs from 'dayjs';
+import _ from "lodash";
+import { useFormsStore } from "./formsStore";
 
 export const useTasksStore = defineStore('TasksStore',{
     state: ()=> ({
@@ -26,6 +28,18 @@ export const useTasksStore = defineStore('TasksStore',{
                 })
         },
 
+        async getTask(taskId){
+            return axiosIns
+                .get(`task/${taskId}`)
+                .then(res => {
+                    const {list, id} = res.data;
+
+                    this.tasks[list.id] = this.tasks[list.id].map(task => task.id === taskId ? res.data : task);
+
+                    if(useFormsStore().task.id === id){useFormsStore().task = res.data}
+                })
+        },
+
         getAllTasks(){
             axiosIns.get(`/team/90151303803/task?include_closed=true`).then(res => {
                 this.allTasks = res.data.tasks
@@ -45,8 +59,6 @@ export const useTasksStore = defineStore('TasksStore',{
                 }
             }
 
-            console.log(data.priority)
-
             dataToBeSent['status'] = data.status.status
             dataToBeSent['priority'] = data.priority?.id
 
@@ -57,15 +69,11 @@ export const useTasksStore = defineStore('TasksStore',{
                 .then((res) => {
 
                     const editedTask = res.data
-                    const {list, id} = editedTask
-
-                    //task edit always returns linked_tasks as an empty array...
-                    //that's why it's maybe better to refresh the whole list...
-
-                    this.hydrateTasks(list.id)
+                    
+                    this.getTask(editedTask.id) // task edit, doesn't return linked_tasks, so we need to use this instead...
 
                     //all Tasks can be huge up to 200+ tasks or even more, always replace the edited part(faster)
-                    this.allTasks = this.allTasks.map(task => task.id === id ? editedTask : task)
+                    this.allTasks = this.allTasks.map(task => task.id === editedTask.id ? editedTask : task)
                 })
         },
 
@@ -97,6 +105,16 @@ export const useTasksStore = defineStore('TasksStore',{
                         })
                 }
             })
+        },
+
+        attachTag(taskId, tag){
+            axiosIns.post(`task/${taskId}/tag/${tag.name}`)
+                .then(() => this.getTask(taskId))
+        },
+
+        removeTag(taskId, tag){
+            axiosIns.delete(`task/${taskId}/tag/${tag.name}`)
+                .then(() => this.getTask(taskId))
         }
     }
 })

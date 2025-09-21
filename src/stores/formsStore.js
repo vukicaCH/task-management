@@ -4,7 +4,8 @@ export const useFormsStore = defineStore('FormsStore',{
     state: ()=> ({
         currentForm: null,
         formVisible: false,
-        task: {}
+        task: {},
+        tag:{}
     }),
 
     actions:{

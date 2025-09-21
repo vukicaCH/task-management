@@ -1,4 +1,5 @@
 import axiosIns from "@/axios";
+import { watch } from "vue";
 
 export const useSpaceStore = defineStore('SpaceStore',{
     state: () => ({
@@ -28,7 +29,7 @@ export const useSpaceStore = defineStore('SpaceStore',{
                         .then(() => {
                             return Promise.allSettled(this.spaces.map( async space => await this.hydrateSpaceItems(space.id)))
                         }).then(() => {
-                            this.currentSpace = this.spaces[0];
+                            this.setCurrentSpace(this.spaces[0].id);
                             this.loading = false
                             this.ready = true;
                         })
@@ -77,6 +78,10 @@ export const useSpaceStore = defineStore('SpaceStore',{
             if(deleteCurrentFolderAndList){
                 this.currentFolder = null;
                 this.currentList = null;
+            }
+
+            if(!(spaceId in this.tags)){
+                this.hydrateSpaceTags(spaceId)
             }
         },
 
@@ -192,6 +197,13 @@ export const useSpaceStore = defineStore('SpaceStore',{
             axiosIns
                 .get(`space/${spaceId}/tag`)
                 .then(res => this.tags[spaceId] = res.data.tags)
+        },
+
+        deleteSpaceTag(spaceId, tagName){
+
+            axiosIns
+                .delete(`space/${spaceId}/tag/${tagName}`)
+                .then(() => this.tags[spaceId] = this.tags[spaceId].filter(tag => tag.name !== tagName))
         }
     }
 })

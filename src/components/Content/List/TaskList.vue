@@ -93,7 +93,7 @@ const openEditor = (e, field, editorInitCallback) => {
 
 const openForm = (formName, task) => {
     formsStore.toggleForm(formName);
-    formsStore.$patch({task})
+    formsStore.task = {...task}
 }
 
 provide('openForm', openForm)
@@ -104,6 +104,7 @@ provide('openForm', openForm)
         v-model:editingRows="editingRows"
         :value="tasks"
         :loading="loading"
+        data-key="id"
         editMode="row"
         @row-edit-save="onRowEditSave"
         columnResizeMode="expand"

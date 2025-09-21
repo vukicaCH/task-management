@@ -1,6 +1,6 @@
 <script setup>
 import EditLinkedTasks from './Task/EditLinkedTasks.vue';
-import EditTags from './Tags/Edit.vue'
+import TaskEditTags from './Task/EditTags.vue';
 import { Dialog } from 'primevue';
 import { useFormsStore } from '@/stores/formsStore';
 
@@ -8,7 +8,7 @@ const formsStore = useFormsStore()
 
 const forms = {
     EditLinkedTasks,
-    EditTags
+    EditTags : TaskEditTags,
 }
 
 </script>
