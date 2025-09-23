@@ -73,17 +73,17 @@ const stopClick = (e) => {
 
 const editingRows = ref([])
 
-const onRowEditSave = (event) => {
-    let { newData, index } = event;
+// const onRowEditSave = (event) => {
+//     let { newData, index } = event;
 
-    const changedTask = {...tasks.value[index]};
+//     const changedTask = {...tasks.value[index]};
 
-    if(_.isEqual(newData, changedTask)) return
+//     if(_.isEqual(newData, changedTask)) return
 
-    tasks.value[index] = newData
+//     tasks.value[index] = newData
 
-    tasksStore.editTask(newData)
-};
+//     tasksStore.editTask(newData)
+// };
 
 const openEditor = (e, field, editorInitCallback) => {
     if(readOnlyFields.includes(field)) stopClick(e)
@@ -91,12 +91,12 @@ const openEditor = (e, field, editorInitCallback) => {
     else editorInitCallback(e)
 }
 
-const openForm = (formName, task) => {
-    formsStore.toggleForm(formName);
-    formsStore.task = {...task}
-}
+// const openForm = (formName, task) => {
+//     formsStore.toggleForm(formName);
+//     formsStore.task = {...task}
+// }
 
-provide('openForm', openForm)
+// provide('openForm', openForm)
 </script>
 
 <template>

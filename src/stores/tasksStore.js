@@ -10,7 +10,8 @@ export const useTasksStore = defineStore('TasksStore',{
         },
         loading: false,
         listId: null,
-        columns:['name', 'linked_tasks', 'tags'],
+        columns:['due_date', 'date_done'],
+        readOnlyFields: ['date_done','date_updated','date_closed','date_created','creator'],
         allTasks:[]
     }),
 
@@ -20,7 +21,7 @@ export const useTasksStore = defineStore('TasksStore',{
             this.loading = true;
 
             axiosIns
-                .get(`list/${listId}/task`)
+                .get(`list/${listId}/task?subtasks=true&include_closed=true`)
                 .then(res => this.tasks[listId] = res.data.tasks)
                 .then(() => {
                     this.loading = false
@@ -41,31 +42,18 @@ export const useTasksStore = defineStore('TasksStore',{
         },
 
         getAllTasks(){
-            axiosIns.get(`/team/90151303803/task?include_closed=true`).then(res => {
+            axiosIns.get(`/team/90151303803/task?include_closed=true&subtasks=true`).then(res => {
                 this.allTasks = res.data.tasks
             })
         },
 
-        editTask(data){
+        editTask(taskId, payload){
 
-            const dataToBeSent = {};
-
-            for(const [key, value] of Object.entries(data)){
-                if(key.includes('date')){
-                    dataToBeSent[key] = dayjs(value).valueOf()
-                }
-                else{
-                    dataToBeSent[key] = value
-                }
-            }
-
-            dataToBeSent['status'] = data.status.status
-            dataToBeSent['priority'] = data.priority?.id
-
-            console.log(dataToBeSent)
+            this.loading = true;
+            this.listId = this.allTasks.find(task => task.id === taskId).list.id;
 
             axiosIns
-                .put(`/task/${dataToBeSent.id}`, dataToBeSent)
+                .put(`/task/${taskId}`, payload)
                 .then((res) => {
 
                     const editedTask = res.data
@@ -74,6 +62,10 @@ export const useTasksStore = defineStore('TasksStore',{
 
                     //all Tasks can be huge up to 200+ tasks or even more, always replace the edited part(faster)
                     this.allTasks = this.allTasks.map(task => task.id === editedTask.id ? editedTask : task)
+                })
+                .finally(()=> {
+                    this.loading = false;
+                    this.listId = null;
                 })
         },
 

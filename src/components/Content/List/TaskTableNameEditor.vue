@@ -1,5 +1,5 @@
 <script setup>
-import { Select } from 'primevue';
+import { InputText } from 'primevue';
 import { useSpaceStore } from '@/stores/spaceStore';
 import { useTasksStore } from '@/stores/tasksStore';
 import { onClickOutside } from '@vueuse/core'
@@ -14,7 +14,6 @@ const props = defineProps({
 const taskRef = toRef(()=> props.task)
 
 const tasksStore = useTasksStore();
-const spaceStore = useSpaceStore();
 
 const target = useTemplateRef('target')
 const ignoreElSelector = '.ignore'
@@ -22,17 +21,15 @@ const ignoreElSelector = '.ignore'
 const editMode = ref(false)
 const canEditTask = ref(false);
 
-const status = ref()
+const name = ref()
 
-watchEffect(()=> status.value = taskRef.value.status)
-
-const options = computed(() => spaceStore.currentSpace.statuses)
+watchEffect(()=> name.value = taskRef.value.name)
 
 onClickOutside(
     target,
     () => {
         if(editMode.value && canEditTask.value){
-            tasksStore.editTask(props.task.id, {status: status.value.status})
+            tasksStore.editTask(props.task.id, {name: name.value})
         }
 
         canEditTask.value = false
@@ -41,21 +38,14 @@ onClickOutside(
     {ignore: [ignoreElSelector]}
 )
 
-watch(status, () => canEditTask.value = status.value.id != taskRef.value.status?.id)
+watch(name, () => canEditTask.value = name.value != taskRef.value.name)
 </script>
 
 <template>
     <div v-if="editMode" ref="target">
-        <Select
-            v-model="status"
-            :options="options"
-            option-label="status"
-            :pt="{option: 'ignore'}"
-        />
+        <InputText v-model="name" />
     </div>
-    <div v-else>
-        <div @click="editMode = true" :style="{borderColor: status.color, color: status.color}" class="cursor-pointer border px-2 py-1 rounded-md">
-            {{ status.status }}
-        </div>
+    <div v-else @click="editMode = true" class="cursor-pointer">
+        {{ name }}
     </div>
 </template>

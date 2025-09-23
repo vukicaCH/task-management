@@ -5,6 +5,7 @@ import ColumnChooser from './ColumnChooser.vue';
 import TaskList from './TaskList.vue';
 import { Panel } from 'primevue';
 import { ChevronLeftIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
+import TaskTable from './TaskTable.vue';
 
 const spaceStore = useSpaceStore();
 
@@ -52,7 +53,7 @@ onMounted(()=> {
                 <ChevronLeftIcon v-if="collapsed" class="w-5 h-5" />
                 <ChevronDownIcon v-else class="w-5 h-5" />
             </template>
-            <TaskList :list-id="list.id" />
+            <TaskTable :list-id="list.id" />
         </Panel>
     </div>
 </template>

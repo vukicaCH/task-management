@@ -22,17 +22,20 @@ const ignoreElSelector = '.ignore'
 const editMode = ref(false)
 const canEditTask = ref(false);
 
-const status = ref()
+const archived = ref()
 
-watchEffect(()=> status.value = taskRef.value.status)
+watchEffect(()=> archived.value = taskRef.value.archived)
 
-const options = computed(() => spaceStore.currentSpace.statuses)
+const options = [
+    {label: 'Yes', value: true},
+    {label: 'No', value: false}
+]
 
 onClickOutside(
     target,
     () => {
         if(editMode.value && canEditTask.value){
-            tasksStore.editTask(props.task.id, {status: status.value.status})
+            tasksStore.editTask(props.task.id, {archived: archived.value})
         }
 
         canEditTask.value = false
@@ -41,21 +44,22 @@ onClickOutside(
     {ignore: [ignoreElSelector]}
 )
 
-watch(status, () => canEditTask.value = status.value.id != taskRef.value.status?.id)
+watch(archived, () => canEditTask.value = archived.value != taskRef.value.archived)
 </script>
 
 <template>
     <div v-if="editMode" ref="target">
         <Select
-            v-model="status"
+            v-model="archived"
             :options="options"
-            option-label="status"
+            option-label="label"
+            option-value="value"
             :pt="{option: 'ignore'}"
         />
     </div>
     <div v-else>
-        <div @click="editMode = true" :style="{borderColor: status.color, color: status.color}" class="cursor-pointer border px-2 py-1 rounded-md">
-            {{ status.status }}
+        <div @click="editMode = true" class="cursor-pointer">
+            {{ archived ? 'Yes' : 'No' }}
         </div>
     </div>
 </template>
