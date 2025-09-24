@@ -189,6 +189,9 @@ export const useSpaceStore = defineStore('SpaceStore',{
 
         async getViews(){
             axiosIns.get('team/90151303803/view').then(res => {
+
+                console.log(res.data)
+
                 this.views.list = res.data.required_views.list
             })
         },

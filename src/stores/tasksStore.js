@@ -1,18 +1,17 @@
 import axiosIns from "@/axios";
-import dayjs from 'dayjs';
 import _ from "lodash";
 import { useFormsStore } from "./formsStore";
 
 export const useTasksStore = defineStore('TasksStore',{
     state: ()=> ({
-        tasks:{
-
-        },
+        tasks:{},
         loading: false,
         listId: null,
         columns:['due_date', 'date_done'],
         readOnlyFields: ['date_done','date_updated','date_closed','date_created','creator'],
-        allTasks:[]
+        allTasks:[],
+        spaceTasks:{},
+        spaceViews: []
     }),
 
     actions:{
