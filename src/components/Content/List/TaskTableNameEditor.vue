@@ -1,6 +1,5 @@
 <script setup>
 import { InputText } from 'primevue';
-import { useSpaceStore } from '@/stores/spaceStore';
 import { useTasksStore } from '@/stores/tasksStore';
 import { onClickOutside } from '@vueuse/core'
 
