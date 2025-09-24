@@ -2,7 +2,6 @@
 import { useSpaceStore } from '@/stores/spaceStore';
 import { useTasksStore } from '@/stores/tasksStore';
 import ColumnChooser from './ColumnChooser.vue';
-import TaskList from './TaskList.vue';
 import { Panel } from 'primevue';
 import { ChevronLeftIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
 import TaskTable from './TaskTable.vue';

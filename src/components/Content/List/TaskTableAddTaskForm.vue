@@ -36,7 +36,12 @@ const createTask = (e) => {
     axiosIns
         .post(`list/${props.list_id}/task`, data)
         .then(res => {
-            tasksStore.tasks[props.list_id] = [...tasksStore.tasks[props.list_id], res.data]
+            if(res.data.top_level_parent){
+                tasksStore.tasks[props.list_id] = [...tasksStore.tasks[props.list_id], res.data];
+            }else{
+                tasksStore.tasks[props.list_id] = [res.data, ...tasksStore.tasks[props.list_id]];
+            }
+            tasksStore.allTasks = [...tasksStore.allTasks, res.data]
         })
         .finally(()=> taskName.value = '')
 
