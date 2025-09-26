@@ -90,28 +90,11 @@ const openForm = (formName, task) => {
     formsStore.task = {...task}
 }
 
-provide('openForm', openForm)
-
-const expandedKeys = ref({})
-
-const close = (key) => {
-
-    if(!key){ //if there's no key, that means we should close new task form
-        toggleNewTaskForm()
-        return
-    }
-
-    let newVal = {...expandedKeys.value};
-
-    delete newVal[key];
-
-    expandedKeys.value = {...newVal};
-}
+provide('openForm', openForm);
 </script>
 
 <template>
     <TreeTable
-        v-model:expanded-keys="expandedKeys"
         :value="tasks"
         :loading="loading"
     >
@@ -135,7 +118,7 @@ const close = (key) => {
                     v-else
                     :top_level_parent="node?.top_level_parent"
                     :list_id="node.list_id"
-                    @close="() => close(node?.top_level_parent)"
+                    @close="toggleNewTaskForm"
                 />
             </template>
         </Column>

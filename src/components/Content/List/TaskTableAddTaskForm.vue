@@ -2,7 +2,6 @@
 import { InputText } from 'primevue';
 import Button from 'primevue/button';
 import { useTasksStore } from '@/stores/tasksStore';
-import { onClickOutside } from '@vueuse/core'
 import axiosIns from '@/axios';
 
 const props = defineProps({
@@ -18,6 +17,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close'])
+
+const editMode = ref(false);
 
 const tasksStore = useTasksStore()
 
@@ -47,21 +48,34 @@ const createTask = (e) => {
 
 }
 
-onMounted(()=> input.value.$el.focus())
+const handleCancelClick = () => {
+    if(!props.top_level_parent) emit('close')
+    else editMode.value = false
+}
 </script>
 
 <template>
     <div class="relative w-full h-[50px]">
         <div class="absolute">
-            <form class="flex gap-2" @submit="(e) => createTask(e)">
+            <form v-if="editMode || !top_level_parent" class="flex gap-2" @submit="(e) => createTask(e)">
                 <InputText
                     v-model="taskName"
                     ref="input"
+                    @vue:mounted="(input) => input.el.focus()"
                     placeholder="Task Name"
                 />
-                <Button severity="secondary" @click="emit('close', top_level_parent)" label="Cancel" />
+                <Button severity="secondary" label="Cancel" @click="handleCancelClick" />
                 <Button severity="contrast" label="Submit" type="submit" />
             </form>
+            <div v-else>
+                <Button
+                    severity="secondary"
+                    outlined
+                    @click="editMode = true"
+                >
+                    + Add Task
+                </Button>
+            </div>
         </div>
     </div>
 </template>

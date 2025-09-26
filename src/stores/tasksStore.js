@@ -11,7 +11,6 @@ export const useTasksStore = defineStore('TasksStore',{
         readOnlyFields: ['date_done','date_updated','date_closed','date_created','creator'],
         allTasks:[],
         spaceTasks:{},
-        spaceViews: []
     }),
 
     actions:{
@@ -44,6 +43,16 @@ export const useTasksStore = defineStore('TasksStore',{
             axiosIns.get(`/team/90151303803/task?include_closed=true&subtasks=true`).then(res => {
                 this.allTasks = res.data.tasks
             })
+        },
+
+        getSpaceTasks(view){
+            axiosIns
+                .get(`view/${view.id}/task`)
+                .then(res => {
+                    const spaceId = view.parent.id
+
+                    this.spaceTasks[spaceId] = res.data.tasks
+                })
         },
 
         editTask(taskId, payload){

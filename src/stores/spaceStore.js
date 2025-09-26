@@ -1,5 +1,4 @@
 import axiosIns from "@/axios";
-import { watch } from "vue";
 
 export const useSpaceStore = defineStore('SpaceStore',{
     state: () => ({
@@ -14,7 +13,9 @@ export const useSpaceStore = defineStore('SpaceStore',{
         },
         loading: false,
         ready: false,
-        views:[],
+        views:{
+            space: {}
+        },
         tags:{}
     }),
 
@@ -189,11 +190,31 @@ export const useSpaceStore = defineStore('SpaceStore',{
 
         async getViews(){
             axiosIns.get('team/90151303803/view').then(res => {
-
-                console.log(res.data)
-
                 this.views.list = res.data.required_views.list
             })
+        },
+
+        getSpaceView(spaceId){
+            axiosIns
+                .get(`space/${spaceId}/view`)
+                .then((res) => {
+
+                    res.data.views.forEach(async view => await axiosIns.delete(`view/${view.id}`))
+
+                    // const boardView = res.data.views.find(view => view.type === 'board')
+
+                    // if(boardView){
+                    //     this.views.space[spaceId] = boardView
+                    // }else{
+                    //     this.createSpaceView(spaceId)
+                    // }
+                })
+        },
+
+        createSpaceView(spaceId){
+            axiosIns
+                .post(`space/${spaceId}/view`,{type: 'board', filters:{show_closed: true}})
+                .then(res => this.views.space[spaceId] = res.data.view)
         },
 
         hydrateSpaceTags(spaceId){
