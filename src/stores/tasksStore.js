@@ -1,6 +1,7 @@
 import axiosIns from "@/axios";
 import _ from "lodash";
 import { useFormsStore } from "./formsStore";
+import { useViewsStore } from "./viewsStore";
 
 export const useTasksStore = defineStore('TasksStore',{
     state: ()=> ({
@@ -29,11 +30,12 @@ export const useTasksStore = defineStore('TasksStore',{
 
         async getTask(taskId){
             return axiosIns
-                .get(`task/${taskId}`)
+                .get(`task/${taskId}?include_subtasks=true`)
                 .then(res => {
-                    const {list, id} = res.data;
+                    const {list, space, id} = res.data;
 
-                    this.tasks[list.id] = this.tasks[list.id].map(task => task.id === taskId ? res.data : task);
+                    if(list.id in this.tasks) this.tasks[list.id] = this.tasks[list.id].map(task => task.id === taskId ? res.data : task);
+                    if(space.id in this.spaceTasks) this.spaceTasks[space.id] = this.spaceTasks[space.id].map(task => task.id === taskId ? res.data : task);
 
                     if(useFormsStore().task.id === id){useFormsStore().task = res.data}
                 })
@@ -57,8 +59,10 @@ export const useTasksStore = defineStore('TasksStore',{
 
         editTask(taskId, payload){
 
+            const viewsStore = useViewsStore();
+
             this.loading = true;
-            this.listId = this.allTasks.find(task => task.id === taskId).list.id;
+            if(viewsStore.currentViewTab === 'list') this.listId = this.allTasks.find(task => task.id === taskId).list.id;
 
             axiosIns
                 .put(`/task/${taskId}`, payload)

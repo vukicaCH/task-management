@@ -8,6 +8,8 @@ export const useViewsStore = defineStore('ViewsStore',() => {
         list: {}
     })
 
+    const currentViewTab = ref('overview')
+
     const spaceStore = useSpaceStore();
 
     const getSpaceView = (spaceId, type) => {
@@ -51,7 +53,8 @@ export const useViewsStore = defineStore('ViewsStore',() => {
 
     return {
         views,
+        currentViewTab,
         createView,
-        getSpaceView
+        getSpaceView,
     }
 })

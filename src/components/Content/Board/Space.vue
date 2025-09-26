@@ -51,7 +51,7 @@ watchEffect(() => {
         <div>
             To Do Tasks: {{ toDoTasks.length }}
 
-            <div class="border rounded-md !space-y-2 p-2 w-max h-[500px] overflow-y-scroll">
+            <div class="rounded-md !space-y-0.75 p-1 w-[275px] h-[500px] overflow-y-scroll bg-gray-700">
                 <BoardTask v-for="task in toDoTasks" :task="task" :key="task.id" />
             </div>
         </div>
@@ -59,7 +59,7 @@ watchEffect(() => {
         <div>
             Complete Tasks: {{ completeTasks.length }}
 
-            <div class="border rounded-md !space-y-2 p-2 w-max h-[500px">
+            <div class="bg-gray-700 rounded-md !space-y-0.75 p-1 w-[275px] h-[500px] overflow-y-scroll">
                 <BoardTask v-for="task in completeTasks" :task="task" :key="task.id" />
             </div>
         </div>
