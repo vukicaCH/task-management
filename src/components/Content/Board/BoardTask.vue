@@ -5,6 +5,7 @@ import { useElementHover } from '@vueuse/core'
 import { useTemplateRef, watch} from 'vue'
 import { useTasksStore } from '@/stores/tasksStore';
 import { InputText } from 'primevue';
+import SubTasksCreateForm from './SubTasksCreateForm.vue';
 
 const props = defineProps({
     task:{
@@ -22,6 +23,7 @@ const taskName = ref(props.task.name)
 
 const open = ref(false);
 const editMode = ref(false);
+const newSubTaskFormOpen = ref(false)
 
 watch(editMode, (newVal) => {
     if(!newVal){
@@ -30,6 +32,11 @@ watch(editMode, (newVal) => {
 })
 
 const toggleOpen = () => open.value = !open.value;
+
+const toggleFormOpen = () => {
+    open.value = true;
+    newSubTaskFormOpen.value = !newSubTaskFormOpen.value;
+}
 
 const completeTask = () => tasksStore.editTask(props.task.id, {status: 'complete'})
 
@@ -47,18 +54,18 @@ const renameTask = () => tasksStore.editTask(props.task.id, {name: taskName.valu
                 <div v-else>{{ task.name }}</div>
             </div>
             <div
-                v-if="isHovered"
+                v-if="isHovered && !editMode"
                 class="absolute top-1 right-1 rounded-md border border-gray-600 flex gap-1 items-center p-1"
             >
                 <button @click="completeTask" v-if="task.status.status == 'to do'" class="cursor-pointer rounded hover:bg-gray-500 p-1">
                     <check-icon v-tooltip="`Mark Complete`" class="w-4.5 h-4.5" />
                 </button>
 
-                <button class="cursor-pointer rounded hover:bg-gray-500 p-1">
+                <button @click="toggleFormOpen" v-if="!task.top_level_parent" class="cursor-pointer rounded hover:bg-gray-500 p-1">
                     <plus-icon v-tooltip="`Add Subtask`" class="w-4.5 h-4.5" />
                 </button>
 
-                <button @click="editMode = true" class="cursor-pointer rounded hover:bg-gray-500 p-1">
+                <button @click="() => editMode = true" class="cursor-pointer rounded hover:bg-gray-500 p-1">
                     <pencil-icon v-tooltip="`Rename`" class="w-4.5 h-4.5" />
                 </button>
             </div>
@@ -78,9 +85,8 @@ const renameTask = () => tasksStore.editTask(props.task.id, {name: taskName.valu
         </div>
     </div>
 
-    <div v-if="open">
-        <div class="rounded-md pl-3 w-full !space-y-0.75">
-            <BoardTask v-for="task in task.subtasks" :task="task" :key="task.id" />
-        </div>
+    <div v-if="open" class="pl-3 w-full !space-y-0.75">
+        <BoardTask v-for="task in task.subtasks" :task="task" :key="task.id" />
+        <SubTasksCreateForm />
     </div>
 </template>
