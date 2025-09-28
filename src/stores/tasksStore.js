@@ -34,6 +34,8 @@ export const useTasksStore = defineStore('TasksStore',{
                 .then(res => {
                     const {list, space, id} = res.data;
 
+                    console.log(res.data)
+
                     if(list.id in this.tasks) this.tasks[list.id] = this.tasks[list.id].map(task => task.id === taskId ? res.data : task);
                     if(space.id in this.spaceTasks) this.spaceTasks[space.id] = this.spaceTasks[space.id].map(task => task.id === taskId ? res.data : task);
 
@@ -48,10 +50,15 @@ export const useTasksStore = defineStore('TasksStore',{
         },
 
         getSpaceTasks(view){
+
+            console.log(view)
+
             axiosIns
                 .get(`view/${view.id}/task`)
                 .then(res => {
                     const spaceId = view.parent.id
+
+                    console.log(res.data.tasks)
 
                     this.spaceTasks[spaceId] = res.data.tasks
                 })
@@ -67,10 +74,11 @@ export const useTasksStore = defineStore('TasksStore',{
             axiosIns
                 .put(`/task/${taskId}`, payload)
                 .then((res) => {
-
                     const editedTask = res.data
-                    
-                    this.getTask(editedTask.id) // task edit, doesn't return linked_tasks, so we need to use this instead...
+
+
+                    if(viewsStore.currentViewTab === 'board') this.getSpaceTasks(viewsStore.currentView)
+                    else this.getTask(editedTask.id) // task edit, doesn't return linked_tasks, so we need to use this instead... 
 
                     //all Tasks can be huge up to 200+ tasks or even more, always replace the edited part(faster)
                     this.allTasks = this.allTasks.map(task => task.id === editedTask.id ? editedTask : task)

@@ -1,11 +1,12 @@
 <script setup>
-import { CalendarIcon, PlusIcon} from '@heroicons/vue/24/outline';
+import {PlusIcon} from '@heroicons/vue/24/outline';
 import { PencilIcon, CheckIcon, PlayIcon } from '@heroicons/vue/24/solid';
 import { useElementHover } from '@vueuse/core'
 import { useTemplateRef, watch} from 'vue'
 import { useTasksStore } from '@/stores/tasksStore';
 import { InputText } from 'primevue';
 import SubTasksCreateForm from './SubTasksCreateForm.vue';
+import BoardTaskDatePicker from './BoardTaskDatePicker.vue';
 
 const props = defineProps({
     task:{
@@ -72,9 +73,7 @@ const renameTask = () => tasksStore.editTask(props.task.id, {name: taskName.valu
         </div>
 
         <div class="p-2">
-            <button class="cursor-pointer rounded border border-gray-600 hover:bg-gray-700 p-1">
-                <calendar-icon class="w-4 h-4" />
-            </button>
+            <BoardTaskDatePicker :task="task" />
         </div>
 
         <div v-if="task.subtasks" class="p-0.5">
@@ -87,6 +86,6 @@ const renameTask = () => tasksStore.editTask(props.task.id, {name: taskName.valu
 
     <div v-if="open" class="pl-3 w-full !space-y-0.75">
         <BoardTask v-for="task in task.subtasks" :task="task" :key="task.id" />
-        <SubTasksCreateForm />
+        <SubTasksCreateForm v-if="newSubTaskFormOpen" :task="task" @close="toggleFormOpen" />
     </div>
 </template>

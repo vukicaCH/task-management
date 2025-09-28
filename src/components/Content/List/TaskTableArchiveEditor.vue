@@ -14,7 +14,6 @@ const props = defineProps({
 const taskRef = toRef(()=> props.task)
 
 const tasksStore = useTasksStore();
-const spaceStore = useSpaceStore();
 
 const target = useTemplateRef('target')
 const ignoreElSelector = '.ignore'

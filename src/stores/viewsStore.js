@@ -8,6 +8,8 @@ export const useViewsStore = defineStore('ViewsStore',() => {
         list: {}
     })
 
+    const currentView = ref();
+
     const currentViewTab = ref('overview')
 
     const spaceStore = useSpaceStore();
@@ -26,6 +28,7 @@ export const useViewsStore = defineStore('ViewsStore',() => {
 
                 if(view){
                     views.space[type][spaceId] = view;
+                    currentView.value = view;
                 }else{
                     createView('space',spaceId, type)
                 }
@@ -34,11 +37,12 @@ export const useViewsStore = defineStore('ViewsStore',() => {
 
     const createView = (parentType, parentId, type) => {
         axiosIns
-            .post(`${parentType}/${parentId}/view`,{type: type, filters:{show_closed: true}, settings : {show_subtasks : 2}})
+            .post(`${parentType}/${parentId}/view`,{type: type, filters:{show_closed: true}, settings : {show_subtasks : 2, show_closed_subtasks: false}})
             .then((res) => {
                 if(!(type in views[parentType])) views[parentType][type] = {}
 
                 views[parentType][type][parentId] = res.data.view
+                currentView.value = res.data.view;
             })
     }
 
@@ -53,6 +57,7 @@ export const useViewsStore = defineStore('ViewsStore',() => {
 
     return {
         views,
+        currentView,
         currentViewTab,
         createView,
         getSpaceView,

@@ -18,10 +18,12 @@ const currentBoardView = computed(() => {
 })
 
 watchEffect(() => {
+
+    //spaceStore.getSpaceView(spaceStore.currentSpace.id)
+
     const view = currentBoardView.value
 
     if(view){
-
         const spaceId = view.parent.id;
 
         if(spaceId in tasksStore.spaceTasks){
