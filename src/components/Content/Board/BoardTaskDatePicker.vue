@@ -4,6 +4,7 @@ import { CalendarIcon} from '@heroicons/vue/24/outline';
 import dayjs from 'dayjs';
 import { Popover } from 'primevue';
 import { DatePicker } from 'primevue';
+import BoardTaskDatesForDatePicker from './BoardTaskDatesForDatePicker.vue';
 
 const props = defineProps({
     task:{
@@ -23,7 +24,21 @@ const toggle = (event) => {
 const startDate = ref(props.task.start_date);
 const dueDate = ref(props.task.due_date);
 
+const canEdit = ref(false);
+
+watch([startDate, dueDate], () => {
+
+    const startDateChanged = getFormattedDate(startDate.value) !== getFormattedDate(props.task.start_date);
+    const dueDateChanged = getFormattedDate(dueDate.value) !== getFormattedDate(props.task.due_date);
+
+    canEdit.value = startDateChanged || dueDateChanged
+
+    console.log(canEdit.value)
+})
+
 const setDates = () => {
+    if(!canEdit.value) return
+
     const start_date = dayjs(Number(startDate.value)).valueOf()
     const due_date = dayjs(Number(dueDate.value)).valueOf()
 
@@ -32,14 +47,21 @@ const setDates = () => {
 
 const getFormattedDate = (date) => dayjs(Number(date)).format('DD/MM/YYYY')
 
+const toolTipText = computed(() => {
+    if(!props.task.start_date && props.task.due_date) return 'Due Date'
+    else if(props.task.start_date && !props.task.due_date) return 'Start Date'
+    else if(props.task.start_date && props.task.due_date) return 'Dates'
+    else if(!props.task.start_date && !props.task.due_date) return 'Due Date'
+})
+
 </script>
 
 <template>
     <div class="flex items-center gap-1">
-        <button @click="toggle" class="cursor-pointer rounded border border-gray-600 hover:bg-gray-700 p-1">
+        <button @click="toggle" v-tooltip="`${toolTipText}`" class="cursor-pointer flex items-center gap-1 rounded border border-gray-600 hover:bg-gray-700 p-1">
             <calendar-icon class="w-4 h-4" />
+            <BoardTaskDatesForDatePicker :start-date="task.start_date" :due-date="task.due_date" />
         </button>
-        {{ getFormattedDate(startDate) }} - {{ getFormattedDate(dueDate) }}
     </div>
 
     <Popover ref="op" @hide="setDates">
@@ -49,6 +71,7 @@ const getFormattedDate = (date) => dayjs(Number(date)).format('DD/MM/YYYY')
                 <DatePicker
                     v-model="startDate"
                     placeholder="Select Start Date..."
+                    show-button-bar
                     :pt="{
                         root(obj){
                             obj.state.d_value = startDate ? getFormattedDate(startDate) : null
@@ -61,6 +84,7 @@ const getFormattedDate = (date) => dayjs(Number(date)).format('DD/MM/YYYY')
                 <DatePicker
                     v-model="dueDate"
                     placeholder="Select Due Date..."
+                    show-button-bar
                     :pt="{
                         root(obj){
                             obj.state.d_value = dueDate ? getFormattedDate(dueDate) : null

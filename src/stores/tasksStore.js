@@ -12,6 +12,7 @@ export const useTasksStore = defineStore('TasksStore',{
         readOnlyFields: ['date_done','date_updated','date_closed','date_created','creator'],
         allTasks:[],
         spaceTasks:{},
+        folderTasks: {}
     }),
 
     actions:{
@@ -50,18 +51,30 @@ export const useTasksStore = defineStore('TasksStore',{
         },
 
         getSpaceTasks(view){
-
-            console.log(view)
+            this.loading = true;
 
             axiosIns
                 .get(`view/${view.id}/task`)
                 .then(res => {
                     const spaceId = view.parent.id
 
-                    console.log(res.data.tasks)
-
                     this.spaceTasks[spaceId] = res.data.tasks
                 })
+                .finally(() => this.loading = false)
+        },
+
+
+        getFolderTasks(view){
+            this.loading = true;
+
+            axiosIns
+                .get(`view/${view.id}/task`)
+                .then(res => {
+                    const folderId = view.parent.id
+
+                    this.folderTasks[folderId] = res.data.tasks
+                })
+                .finally(() => this.loading = false)
         },
 
         editTask(taskId, payload){

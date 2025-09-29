@@ -35,10 +35,53 @@ export const useViewsStore = defineStore('ViewsStore',() => {
             })
     }
 
+    const getFolderView = (folderId, type) => {
+        if(!(type in views.folder)) views.folder[type] = {}
+
+        axiosIns
+            .get(`folder/${folderId}/view`)
+            .then(res => {
+
+                //console.log(res.data)
+
+                const view = res.data.views.find(view => view.type === type);
+
+                if(view){
+                    views.folder[type][folderId] = view;
+                    currentView.value = view;
+                }else{
+                    createView('folder', folderId, type)
+                }
+            })
+    }
+
+    const getListView = (listId, type) => {
+        if(!(type in views.list)) views.list[type] = {}
+
+        axiosIns
+            .get(`list/${listId}/view`)
+            .then(res => {
+
+                //console.log(res.data)
+
+                const view = res.data.views.find(view => view.type === type);
+
+                if(view){
+                    views.list[type][listId] = view;
+                    currentView.value = view;
+                }else{
+                    createView('list', listId, type)
+                }
+            })
+    }
+
     const createView = (parentType, parentId, type) => {
         axiosIns
             .post(`${parentType}/${parentId}/view`,{type: type, filters:{show_closed: true}, settings : {show_subtasks : 2, show_closed_subtasks: false}})
             .then((res) => {
+
+                console.log(res)
+
                 if(!(type in views[parentType])) views[parentType][type] = {}
 
                 views[parentType][type][parentId] = res.data.view
@@ -47,13 +90,34 @@ export const useViewsStore = defineStore('ViewsStore',() => {
     }
 
     watch(
-        () => spaceStore.currentSpace,
+        () => [spaceStore.currentSpace, spaceStore.currentFolder, spaceStore.currentList],
         () => {
-            const spaceId = spaceStore.currentSpace.id
+            if(spaceStore.currentList){
+                const listId = spaceStore.currentList.id
 
-            getSpaceView(spaceId, 'board')
+                getListView(listId, 'board')
 
-    },{immediate: true})
+                return;
+            }
+
+            if(spaceStore.currentFolder){
+                const folderId = spaceStore.currentFolder.id
+
+                getFolderView(folderId, 'board')
+
+                return;
+            }
+
+            if(spaceStore.currentSpace){
+                const spaceId = spaceStore.currentSpace.id
+
+                getSpaceView(spaceId, 'board')
+            }
+        },
+        {immediate: true}
+    )
+
+
 
     return {
         views,

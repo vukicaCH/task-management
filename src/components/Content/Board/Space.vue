@@ -11,45 +11,55 @@ const viewsStore = useViewsStore();
 const toDoTasks = ref([]);
 const completeTasks = ref([]);
 
-const currentBoardView = computed(() => {
-    const spaceId = spaceStore.currentSpace.id;
-
-    return viewsStore.views.space['board'][spaceId]
-})
+const loaded = computed(() => !tasksStore.loading || spaceStore.currentSpace.id in tasksStore.spaceTasks)
 
 watchEffect(() => {
 
     //spaceStore.getSpaceView(spaceStore.currentSpace.id)
 
-    const view = currentBoardView.value
+    console.log(viewsStore.currentView)
 
-    if(view){
-        const spaceId = view.parent.id;
+    if(viewsStore.currentView){
 
-        if(spaceId in tasksStore.spaceTasks){
+        const parent = viewsStore.currentView.parent;
+
+        let tasksProp = {}
+        let tasksGetter = '';
+
+        switch(parent.type){
+            case 6:
+                tasksProp = tasksStore.listTasks
+                tasksGetter = () => tasksStore.getListTasks(viewsStore.currentView)
+            case 5:
+                tasksProp = tasksStore.folderTasks;
+                tasksGetter = () => tasksStore.getFolderTasks(viewsStore.currentView)
+            case 4:
+                tasksProp = tasksStore.spaceTasks
+                tasksGetter = () => tasksStore.getSpaceTasks(viewsStore.currentView)    
+        }
+
+        if(parent.id in tasksProp){
 
             const toDo = [];
             const complete = []
 
-            tasksStore.spaceTasks[spaceId].map(task => {
+            tasksProp[parent.id].map(task => {
                 if(task.status.status === 'to do')  toDo.push(task)
                 else complete.push(task)
             })
 
             toDoTasks.value = toDo;
             completeTasks.value = complete;
-
-            return
+        }else{
+           tasksGetter()
         }
-        
-        tasksStore.getSpaceTasks(view)
     }
 })
 </script>
 
 <template>
 
-    <div class="flex gap-4">
+    <div v-if="loaded" class="flex gap-4">
         <div>
             To Do Tasks: {{ toDoTasks.length }}
 

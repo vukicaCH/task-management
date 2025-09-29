@@ -195,6 +195,8 @@ export const useSpaceStore = defineStore('SpaceStore',{
         },
 
         getSpaceView(spaceId){
+            console.log(spaceId)
+
             axiosIns
                 .get(`space/${spaceId}/view`)
                 .then((res) => {

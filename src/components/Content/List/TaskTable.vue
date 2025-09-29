@@ -34,9 +34,7 @@ const tasks = computed(() => {
         const treeTasks = buildTaskTree(tasksStore.tasks[props.listId])
 
         if(isNewTasksFormOpen.value){
-            const listId = treeTasks[0].data.list.id;
-
-            return [{list_id: listId}, ...treeTasks]
+            return [{list_id: props.listId}, ...treeTasks]
         }
 
         return treeTasks;
