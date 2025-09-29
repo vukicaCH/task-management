@@ -5,8 +5,11 @@ import ColumnChooser from './ColumnChooser.vue';
 import { Panel } from 'primevue';
 import { ChevronLeftIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
 import TaskTable from './TaskTable.vue';
+import { useViewsStore } from '@/stores/viewsStore';
+import axiosIns from '@/axios';
 
 const spaceStore = useSpaceStore();
+const viewsStore = useViewsStore();
 
 const allListsInSpace = computed(() => {
     const spaceId = spaceStore.currentSpace?.id
@@ -35,6 +38,14 @@ const onCollapse = (collapsed, listId) => {
 onMounted(()=> {
     tasksStore.getAllTasks();
 })
+
+// watch(() => viewsStore.currentView, () => {
+//     axiosIns
+//         .get(`view/${viewsStore.currentView.id}/task`)
+//         .then(res => {
+//             console.log(res.data)
+//         })
+// })
 </script>
 
 <template>

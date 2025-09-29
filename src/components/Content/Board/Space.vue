@@ -17,8 +17,6 @@ watchEffect(() => {
 
     //spaceStore.getSpaceView(spaceStore.currentSpace.id)
 
-    console.log(viewsStore.currentView)
-
     if(viewsStore.currentView){
 
         const parent = viewsStore.currentView.parent;

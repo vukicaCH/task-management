@@ -6,6 +6,8 @@ export const useSpaceStore = defineStore('SpaceStore',{
         currentSpace: null,
         currentFolder: null,
         currentList: null,
+        currentType: null,
+        currentTypeId: null,
         folders: {},
         lists: {
             space:{},
@@ -76,6 +78,9 @@ export const useSpaceStore = defineStore('SpaceStore',{
         setCurrentSpace(spaceId, deleteCurrentFolderAndList = false){
             this.currentSpace = this.spaces.find(space => space.id === spaceId)
 
+            this.currentType = 'space';
+            this.currentTypeId = spaceId;
+
             if(deleteCurrentFolderAndList){
                 this.currentFolder = null;
                 this.currentList = null;
@@ -89,6 +94,9 @@ export const useSpaceStore = defineStore('SpaceStore',{
         setCurrentFolder(folder, deleteCurrentList = false){
             this.currentFolder = folder;
             this.setCurrentSpace(folder.space.id)
+
+            this.currentType = 'folder';
+            this.currentTypeId = folder.id;
 
             if(deleteCurrentList) this.currentList = null;
         },
@@ -104,6 +112,9 @@ export const useSpaceStore = defineStore('SpaceStore',{
             }else{
                 this.currentFolder = this.folders[list.space.id].find(folder => folder.id === list.folder.id)
             }
+
+            this.currentType = 'list';
+            this.currentTypeId = list.id;
         },
 
         addListToFolder(list){

@@ -63,7 +63,6 @@ export const useTasksStore = defineStore('TasksStore',{
                 .finally(() => this.loading = false)
         },
 
-
         getFolderTasks(view){
             this.loading = true;
 

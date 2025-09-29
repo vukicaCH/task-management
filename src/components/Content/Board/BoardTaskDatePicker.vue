@@ -7,7 +7,7 @@ import { DatePicker } from 'primevue';
 import BoardTaskDatesForDatePicker from './BoardTaskDatesForDatePicker.vue';
 
 const props = defineProps({
-    task:{
+    task: {
         type: Object,
         required: true,
     }
