@@ -8,15 +8,18 @@ import SpaceOverview from './Overview/Space.vue';
 import SpaceList from './List/Space.vue';
 import SpaceBoard from './Board/Space.vue';
 import { useViewsStore } from '@/stores/viewsStore';
+import { useSpaceStore } from '@/stores/spaceStore';
 
 const viewsStore = useViewsStore();
+const spaceStore = useSpaceStore();
+
 </script>
     
 <template>
     <div class="card">
         <Tabs v-model:value="viewsStore.currentViewTab" :lazy="true">
             <TabList>
-                <Tab value="overview">Overview</Tab>
+                <Tab value="overview" v-if="spaceStore.currentType === 'space'">Overview</Tab>
                 <Tab value="list">List</Tab>
                 <Tab value="board">Board</Tab>
             </TabList>

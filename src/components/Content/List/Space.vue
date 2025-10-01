@@ -3,25 +3,10 @@ import { useSpaceStore } from '@/stores/spaceStore';
 import { useTasksStore } from '@/stores/tasksStore';
 import ColumnChooser from './ColumnChooser.vue';
 import { Panel } from 'primevue';
-import { ChevronLeftIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
+import { ChevronLeftIcon, ChevronDownIcon, FolderIcon } from '@heroicons/vue/24/outline';
 import TaskTable from './TaskTable.vue';
-import { useViewsStore } from '@/stores/viewsStore';
-import axiosIns from '@/axios';
 
 const spaceStore = useSpaceStore();
-const viewsStore = useViewsStore();
-
-const allListsInSpace = computed(() => {
-    const spaceId = spaceStore.currentSpace?.id
-
-    const allSpaceLists = [...spaceStore.lists.space[spaceId]]
-
-    const allFolderLists = []
-    
-    spaceStore.folders[spaceId].forEach(folder => spaceStore.lists.folder[folder.id].map(list => allFolderLists.push(list)))
-
-    return [...allSpaceLists, ...allFolderLists];
-})
 
 const tasksStore = useTasksStore()
 
@@ -38,25 +23,17 @@ const onCollapse = (collapsed, listId) => {
 onMounted(()=> {
     tasksStore.getAllTasks();
 })
-
-// watch(() => viewsStore.currentView, () => {
-//     axiosIns
-//         .get(`view/${viewsStore.currentView.id}/task`)
-//         .then(res => {
-//             console.log(res.data)
-//         })
-// })
 </script>
 
 <template>
     <div class="!space-y-2">
         <ColumnChooser />
 
-        <Panel v-for="list in allListsInSpace" :key="list.id" :header="list.name" toggleable :collapsed="true" @update:collapsed="(collapsed) => onCollapse(collapsed, list.id)">
+        <Panel v-for="list in spaceStore.getLists" :key="list.id" :header="list.name" toggleable :collapsed="true" @update:collapsed="(collapsed) => onCollapse(collapsed, list.id)">
             <template #header>
                 <div class="flex flex-col">
-                    <span class="text-xs text-gray-400"><span v-if="!list.folder.hidden">{{ list.folder.name }} / </span>{{ list.name }}</span>
-                    <span class="!font-medium">{{ list.name }} ({{ list.task_count }})</span>
+                    <span class="text-xs text-gray-400 flex gap-1 !font-medium" v-if="!list.folder.hidden"><FolderIcon class="w-4"/> {{ list.folder.name }}</span>
+                    <span class="!font-medium">{{ list.name }}</span>
                 </div>
             </template>
             <template #toggleicon="{collapsed}">

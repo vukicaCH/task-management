@@ -1,4 +1,5 @@
 import axiosIns from "@/axios";
+import { useViewsStore } from "./viewsStore";
 
 export const useSpaceStore = defineStore('SpaceStore',{
     state: () => ({
@@ -18,7 +19,7 @@ export const useSpaceStore = defineStore('SpaceStore',{
         views:{
             space: {}
         },
-        tags:{}
+        tags:{},
     }),
 
     actions: {
@@ -98,12 +99,20 @@ export const useSpaceStore = defineStore('SpaceStore',{
             this.currentType = 'folder';
             this.currentTypeId = folder.id;
 
+            const viewsStore = useViewsStore();
+
+            if(viewsStore.currentViewTab === 'overview') viewsStore.currentViewTab = 'list'
+
             if(deleteCurrentList) this.currentList = null;
         },
 
         setCurrentList(list){
             this.currentList = list;
             this.setCurrentSpace(list.space.id)
+
+            const viewsStore = useViewsStore();
+
+            if(viewsStore.currentViewTab === 'overview') viewsStore.currentViewTab = 'list'
 
             const folderless = list.folder.hidden
 
@@ -199,12 +208,6 @@ export const useSpaceStore = defineStore('SpaceStore',{
             return this.hydrateSpaceItems(space.id)
         },
 
-        async getViews(){
-            axiosIns.get('team/90151303803/view').then(res => {
-                this.views.list = res.data.required_views.list
-            })
-        },
-
         getSpaceView(spaceId){
             console.log(spaceId)
 
@@ -242,5 +245,23 @@ export const useSpaceStore = defineStore('SpaceStore',{
                 .delete(`space/${spaceId}/tag/${tagName}`)
                 .then(() => this.tags[spaceId] = this.tags[spaceId].filter(tag => tag.name !== tagName))
         }
+    },
+
+    getters:{
+        getFolders: (state) => state.folders[state.currentSpace.id],
+
+        getLists(state){
+            if(state.currentList) return [state.currentList] 
+            else if(state.currentFolder) return state.lists.folder[state.currentFolder.id]
+            else{
+                const folderLists = this.getFolders.flatMap(folder => state.lists.folder[folder.id])
+                const folderlessLists = state.lists.space[state.currentSpace.id]
+                
+
+                return [...folderLists, ...folderlessLists]  
+            }
+        },
+
+        getFolderlessLists: (state) => state.lists.space[state.currentSpace.id]
     }
 })

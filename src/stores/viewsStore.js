@@ -28,8 +28,6 @@ export const useViewsStore = defineStore('ViewsStore',() => {
             .get(`${parent}/${parentId}/view`)
             .then(res => {
 
-                //console.log(res.data)
-
                 const view = res.data.views.find(view => view.type === type);
 
                 if(view){
@@ -57,11 +55,11 @@ export const useViewsStore = defineStore('ViewsStore',() => {
     }
 
     watch(
-        () => [spaceStore.currentType, currentViewTab.value],
+        () => [spaceStore.currentTypeId, currentViewTab.value],
         () => {
-            if(currentViewTab.value === 'overview') return;
-
-            setView(spaceStore.currentType, spaceStore.currentTypeId, currentViewTab.value)
+            if(currentViewTab.value !== 'overview'){
+                setView(spaceStore.currentType, spaceStore.currentTypeId, currentViewTab.value)
+            }
         },
         {immediate: true}
     )

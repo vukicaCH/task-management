@@ -2,11 +2,6 @@
 import Sidebar from './components/Sidebar.vue';
 import Content from './components/Content/Content.vue';
 import Forms from './components/Forms.vue';
-import { useSpaceStore } from './stores/spaceStore';
-
-const tasksStore = useSpaceStore()
-
-onMounted(()=> tasksStore.getViews())
 </script>
 
 <template>
