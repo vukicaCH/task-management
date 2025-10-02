@@ -33,6 +33,9 @@ const options = [
 onClickOutside(
     target,
     () => {
+
+        console.log('hey')
+
         if(editMode.value && canEditTask.value){
             tasksStore.editTask(props.task.id, {archived: archived.value})
         }

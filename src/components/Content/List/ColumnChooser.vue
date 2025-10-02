@@ -12,7 +12,6 @@ const columns = computed(() => {
 
     const cols = [
         'archived',
-        'creator',
         'date_closed',
         'date_created',
         'date_done',

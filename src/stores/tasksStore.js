@@ -35,8 +35,6 @@ export const useTasksStore = defineStore('TasksStore',{
                 .then(res => {
                     const {list, space, id} = res.data;
 
-                    console.log(res.data)
-
                     if(list.id in this.tasks) this.tasks[list.id] = this.tasks[list.id].map(task => task.id === taskId ? res.data : task);
                     if(space.id in this.spaceTasks) this.spaceTasks[space.id] = this.spaceTasks[space.id].map(task => task.id === taskId ? res.data : task);
 

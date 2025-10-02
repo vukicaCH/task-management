@@ -1,19 +1,12 @@
 <script setup>
 import TreeTable from 'primevue/treetable';
 import Column from 'primevue/column';
-import { InputText } from 'primevue';
 import { useTasksStore } from '@/stores/tasksStore';
 import { useFormsStore } from '@/stores/formsStore';
-import dayjs from 'dayjs';
-import TaskListLinkedTasks from './TaskListLinkedTasks.vue';
-import TaskListTagsEditor from './TaskListTagsEditor.vue';
-import TaskListPriority from './TaskListPriority.vue';
-import TaskStatusSelect from './TaskStatusSelect.vue';
-import TaskListTimePickerEditor from './TaskListTimePickerEditor.vue';
-import TaskTableArchiveEditor from './TaskTableArchiveEditor.vue';
 import TaskTableNameEditor from './TaskTableNameEditor.vue';
 import TaskTableAddSubtasksForm from './TaskTableAddTaskForm.vue';
 import { Button } from 'primevue';
+import TaskTableNode from './TaskTableNode.vue';
 
 const props = defineProps({
     listId:{
@@ -34,7 +27,7 @@ const tasks = computed(() => {
         const treeTasks = buildTaskTree(tasksStore.tasks[props.listId])
 
         if(isNewTasksFormOpen.value){
-            return [{list_id: props.listId}, ...treeTasks]
+            return [{list_id: props.listId}, ...treeTasks] //this will allow us to add new task form inside table header
         }
 
         return treeTasks;
@@ -59,19 +52,27 @@ function buildTaskTree(tasks) {
 
     tasks.forEach(task => {
         if (task.top_level_parent) {
-            // This is a subtask → push into its parent
             if (taskMap[task.top_level_parent]) {
                 taskMap[task.top_level_parent].children.push(taskMap[task.id]);
             }
         } else {
-            // No parent → it's a root task
             roots.push(taskMap[task.id]);
         }
     });
 
     const rootsWithAddSubtasksFormIndicator = roots.map(root => {
-        if(!root.top_level_parent) return {...root, children: [...root.children, {top_level_parent: root.key, list_id: root.data.list.id}]}
-        else root
+        if(!root.top_level_parent){
+            return {
+                    ...root,
+                    children: [
+                        ...root.children,
+                        {top_level_parent: root.key, list_id: root.data.list.id}
+                        //this will allow us to add new subtask form below other subtasks
+                    ]
+            }
+        }else{
+            return root
+        }
     })
 
     return rootsWithAddSubtasksFormIndicator
@@ -123,15 +124,7 @@ provide('openForm', openForm);
         <Column v-for="col in tasksStore.columns" :field="col" :header="getColHeader(col)">
             <template #body="{node}">
                 <div v-if="node.data">
-                    <TaskListLinkedTasks v-if="col === 'linked_tasks'" :task="node.data" />
-                    <TaskListTagsEditor v-if="col === 'tags'" :task="node.data" />
-                    <TaskListPriority v-if="col === 'priority'" :task="node.data" />
-                    <TaskStatusSelect v-if="col === 'status'" :task="node.data"/>
-                    <TaskListTimePickerEditor v-if="col.includes('date')" :task="node.data" :field="col" />
-                    <TaskTableArchiveEditor v-if="col === 'archived'" :task="node.data" />
-                    <div v-if="col === 'creator'" class="cursor-not-allowed" v-tooltip.top="'Read Only'">
-                        {{ node.data[col].username }}
-                    </div>
+                    <TaskTableNode :column="col" :task="node.data" />
                 </div>
             </template>
         </Column>

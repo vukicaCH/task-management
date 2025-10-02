@@ -7,7 +7,6 @@ import { ChevronLeftIcon, ChevronDownIcon, FolderIcon } from '@heroicons/vue/24/
 import TaskTable from './TaskTable.vue';
 
 const spaceStore = useSpaceStore();
-
 const tasksStore = useTasksStore()
 
 const getTasksForList = (listId) => {
@@ -15,21 +14,32 @@ const getTasksForList = (listId) => {
 }
 
 const onCollapse = (collapsed, listId) => {
-    if(!collapsed){
-        getTasksForList(listId)
-    }
+    if(!collapsed) getTasksForList(listId)
 }
 
-onMounted(()=> {
-    tasksStore.getAllTasks();
-})
+onMounted(()=> tasksStore.getAllTasks())
+
+watch(() => spaceStore.currentTypeId, () => {
+    
+    if(spaceStore.currentType === 'list') getTasksForList(spaceStore.currentTypeId)
+    
+},{immediate: true})
 </script>
 
 <template>
     <div class="!space-y-2">
         <ColumnChooser />
 
-        <Panel v-for="list in spaceStore.getLists" :key="list.id" :header="list.name" toggleable :collapsed="true" @update:collapsed="(collapsed) => onCollapse(collapsed, list.id)">
+        <TaskTable v-if="spaceStore.currentType === 'list'" :list-id="spaceStore.currentTypeId" />
+        <Panel
+            v-else
+            v-for="list in spaceStore.getLists"
+            :key="list.id"
+            :header="list.name"
+            toggleable
+            :collapsed="true"
+            @update:collapsed="(collapsed) => onCollapse(collapsed, list.id)"
+        >
             <template #header>
                 <div class="flex flex-col">
                     <span class="text-xs text-gray-400 flex gap-1 !font-medium" v-if="!list.folder.hidden"><FolderIcon class="w-4"/> {{ list.folder.name }}</span>
