@@ -34,7 +34,7 @@ const createSubtask = async () => {
         .post(`list/${list.id}/task`,{name: taskName.value, parent: id})
         .then(res => {
             const view = {...viewsStore.currentView};
-            tasksStore.getSpaceTasks(view)
+            tasksStore.hydrateSpaceTasks(view)
         })
         .finally(() => {
             taskName.value = ''

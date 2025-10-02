@@ -38,11 +38,11 @@ const createTask = (e) => {
         .post(`list/${props.list_id}/task`, data)
         .then(res => {
             if(res.data.top_level_parent){
-                tasksStore.tasks[props.list_id] = [...tasksStore.tasks[props.list_id], res.data];
+                tasksStore.tasks.list[props.list_id] = [...tasksStore.tasks.list[props.list_id], res.data];
             }else{
-                tasksStore.tasks[props.list_id] = [res.data, ...tasksStore.tasks[props.list_id]];
+                tasksStore.tasks.list[props.list_id] = [res.data, ...tasksStore.tasks.list[props.list_id]];
             }
-            tasksStore.allTasks = [...tasksStore.allTasks, res.data]
+            tasksStore.tasks.team = [...tasksStore.tasks.team, res.data]
         })
         .finally(()=> taskName.value = '')
 

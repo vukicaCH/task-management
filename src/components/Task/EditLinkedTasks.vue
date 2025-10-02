@@ -13,7 +13,7 @@ onMounted(() => {
     const links = formsStore.task.linked_tasks.map(link => link.link_id)
     const ids = formsStore.task.linked_tasks.map(link => link.task_id)
 
-    const tasks = tasksStore.allTasks.filter(task => links.includes(task.id) || ids.includes(task.id))
+    const tasks = tasksStore.tasks.team.filter(task => links.includes(task.id) || ids.includes(task.id))
 
     linkedTasks.value = tasks.map(task => task.id)
 })
@@ -28,7 +28,7 @@ onMounted(() => {
 
         <Listbox
             v-model="linkedTasks"
-            :options="tasksStore.allTasks"
+            :options="tasksStore.tasks.team"
             placeholder="Choose Tasks..."
             option-label="name"
             option-value="id"

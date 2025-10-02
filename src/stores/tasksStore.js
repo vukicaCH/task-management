@@ -5,50 +5,62 @@ import { useViewsStore } from "./viewsStore";
 
 export const useTasksStore = defineStore('TasksStore',{
     state: ()=> ({
-        tasks:{},
+        tasks:{
+            space: {},
+            folder: {},
+            list: {},
+            team: []
+        },
         loading: false,
         listId: null,
         columns:['due_date', 'date_done'],
         readOnlyFields: ['date_done','date_updated','date_closed','date_created','creator'],
         allTasks:[],
-        spaceTasks:{},
-        folderTasks: {}
     }),
 
     actions:{
-        hydrateTasks(listId){
+
+        buildTree(tasks) {
+            const taskMap = new Map();
+
+            // napravi mapu taskova
+            tasks.forEach(task => {
+                task.subtasks = [];
+                taskMap.set(task.id, task);
+            });
+
+            const tree = [];
+
+            tasks.forEach(task => {
+                if (task.parent) {
+                    const parent = taskMap.get(task.parent);
+                    if (parent) {
+                        parent.subtasks.push(task);
+                    }
+                } else {
+                    tree.push(task);
+                }
+            });
+
+            return tree;
+        },
+        
+        hydrateListTasks(listId){
             this.listId = listId;
             this.loading = true;
 
             axiosIns
                 .get(`list/${listId}/task?subtasks=true&include_closed=true`)
-                .then(res => this.tasks[listId] = res.data.tasks)
+                .then(res => {
+                    this.tasks.list[listId] = this.buildTree(res.data.tasks)
+                })
                 .then(() => {
                     this.loading = false
                     this.listId = null
                 })
         },
 
-        async getTask(taskId){
-            return axiosIns
-                .get(`task/${taskId}?include_subtasks=true`)
-                .then(res => {
-                    const {list, space, id} = res.data;
-
-                    if(list.id in this.tasks) this.tasks[list.id] = this.tasks[list.id].map(task => task.id === taskId ? res.data : task);
-                    if(space.id in this.spaceTasks) this.spaceTasks[space.id] = this.spaceTasks[space.id].map(task => task.id === taskId ? res.data : task);
-
-                    if(useFormsStore().task.id === id){useFormsStore().task = res.data}
-                })
-        },
-
-        getAllTasks(){
-            axiosIns.get(`/team/90151303803/task?include_closed=true&subtasks=true`).then(res => {
-                this.allTasks = res.data.tasks
-            })
-        },
-
-        getSpaceTasks(view){
+        hydrateSpaceTasks(view){
             this.loading = true;
 
             axiosIns
@@ -56,12 +68,12 @@ export const useTasksStore = defineStore('TasksStore',{
                 .then(res => {
                     const spaceId = view.parent.id
 
-                    this.spaceTasks[spaceId] = res.data.tasks
+                    this.tasks.space[spaceId] = res.data.tasks
                 })
                 .finally(() => this.loading = false)
         },
 
-        getFolderTasks(view){
+        hydrateFolderTasks(view){
             this.loading = true;
 
             axiosIns
@@ -69,9 +81,29 @@ export const useTasksStore = defineStore('TasksStore',{
                 .then(res => {
                     const folderId = view.parent.id
 
-                    this.folderTasks[folderId] = res.data.tasks
+                    this.tasks.folder[folderId] = res.data.tasks
                 })
                 .finally(() => this.loading = false)
+        },
+
+        async getTask(taskId){
+            return axiosIns
+                .get(`task/${taskId}?include_subtasks=true`)
+                .then(res => {
+                    const {list, space, folder, id} = res.data;
+
+                    if(list.id in this.tasks.list) this.tasks.list[list.id] = this.tasks.list[list.id].map(task => task.id === taskId ? res.data : task);
+                    if(space.id in this.tasks.space) this.tasks.space[space.id] = this.tasks.space[space.id].map(task => task.id === taskId ? res.data : task);
+                    if(folder.id in this.tasks.folder) this.tasks.space[folder.id] = this.tasks.space[folder.id].map(task => task.id === taskId ? res.data : task);
+
+                    if(useFormsStore().task.id === id){useFormsStore().task = res.data}
+                })
+        },
+
+        getAllTasks(){
+            axiosIns.get(`/team/90151303803/task?include_closed=true&subtasks=true`).then(res => {
+                this.tasks.team = res.data.tasks
+            })
         },
 
         editTask(taskId, payload){
@@ -79,7 +111,7 @@ export const useTasksStore = defineStore('TasksStore',{
             const viewsStore = useViewsStore();
 
             this.loading = true;
-            if(viewsStore.currentViewTab === 'list') this.listId = this.allTasks.find(task => task.id === taskId).list.id;
+            if(viewsStore.currentViewTab === 'list') this.listId = this.tasks.team.find(task => task.id === taskId).list.id;
 
             axiosIns
                 .put(`/task/${taskId}`, payload)
@@ -87,11 +119,11 @@ export const useTasksStore = defineStore('TasksStore',{
                     const editedTask = res.data
 
 
-                    if(viewsStore.currentViewTab === 'board') this.getSpaceTasks(viewsStore.currentView)
+                    if(viewsStore.currentViewTab === 'board') this.hydrateSpaceTasks(viewsStore.currentView)
                     else this.getTask(editedTask.id) // task edit, doesn't return linked_tasks, so we need to use this instead... 
 
                     //all Tasks can be huge up to 200+ tasks or even more, always replace the edited part(faster)
-                    this.allTasks = this.allTasks.map(task => task.id === editedTask.id ? editedTask : task)
+                    this.tasks.team = this.tasks.team.map(task => task.id === editedTask.id ? editedTask : task)
                 })
                 .finally(()=> {
                     this.loading = false;
@@ -106,22 +138,22 @@ export const useTasksStore = defineStore('TasksStore',{
             .then(res => {
 
                 const fromTask = res.data.task;
-                const toTask = this.allTasks.find(task => task.id === to) 
+                const toTask = this.tasks.team.find(task => task.id === to) 
 
                 const {list, id} = fromTask;
 
-                this.tasks[list.id] = this
+                this.tasks.list[list.id] = this
                                         .tasks[list.id]
                                         .map(task => task.id === id ? fromTask : task)                   
 
-                if(toTask.list.id in this.tasks && this.tasks[toTask.list.id].length){
+                if(toTask.list.id in this.tasks.list && this.tasks.list[toTask.list.id].length){
                     axiosIns
                         .get(`task/${to}`)
                         .then(res => {
 
                             const newTask = res.data
 
-                            this.tasks[toTask.list.id] = this
+                            this.tasks.list[toTask.list.id] = this
                                                             .tasks[toTask.list.id]
                                                             .map(task => task.id === to ? newTask : task)
                         })

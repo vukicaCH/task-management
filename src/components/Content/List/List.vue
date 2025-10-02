@@ -10,7 +10,7 @@ const spaceStore = useSpaceStore();
 const tasksStore = useTasksStore()
 
 const getTasksForList = (listId) => {
-    if(!(listId in tasksStore.tasks)) tasksStore.hydrateTasks(listId)
+    if(!(listId in tasksStore.tasks.list)) tasksStore.hydrateListTasks(listId)
 }
 
 const onCollapse = (collapsed, listId) => {

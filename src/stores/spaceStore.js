@@ -208,11 +208,10 @@ export const useSpaceStore = defineStore('SpaceStore',{
             return this.hydrateSpaceItems(space.id)
         },
 
-        getSpaceView(spaceId){
-            console.log(spaceId)
+        getSpaceView(){
 
             axiosIns
-                .get(`space/${spaceId}/view`)
+                .get(`${this.currentType}/${this.currentTypeId}/view`)
                 .then((res) => {
 
                     res.data.views.forEach(async view => await axiosIns.delete(`view/${view.id}`))

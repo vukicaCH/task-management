@@ -16,7 +16,7 @@ const linkedTasks = computed(() => {
     const links = taskData.value.linked_tasks
     const ids = new Set(links.flatMap(({ task_id, link_id }) => [task_id, link_id]))
 
-    return tasksStore.allTasks.filter(task => ids.has(task.id))
+    return tasksStore.tasks.team.filter(task => ids.has(task.id))
 })
 
 const firstTwoTasks = computed(() => linkedTasks.value.slice(0,2) ?? linkedTasks.value)

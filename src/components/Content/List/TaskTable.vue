@@ -3,10 +3,10 @@ import TreeTable from 'primevue/treetable';
 import Column from 'primevue/column';
 import { useTasksStore } from '@/stores/tasksStore';
 import { useFormsStore } from '@/stores/formsStore';
-import TaskTableNameEditor from './TaskTableNameEditor.vue';
-import TaskTableAddSubtasksForm from './TaskTableAddTaskForm.vue';
+import TaskTableNameEditor from './TaskTablePartials/TaskTableNameEditor.vue';
+import TaskTableAddSubtasksForm from './TaskTablePartials/TaskTableAddTaskForm.vue';
 import { Button } from 'primevue';
-import TaskTableNode from './TaskTableNode.vue';
+import TaskTableNode from './TaskTablePartials/TaskTableNode.vue';
 
 const props = defineProps({
     listId:{
@@ -23,8 +23,8 @@ const isNewTasksFormOpen = ref(false)
 const toggleNewTaskForm = () => isNewTasksFormOpen.value = !isNewTasksFormOpen.value
 
 const tasks = computed(() => {
-    if(props.listId in tasksStore.tasks){
-        const treeTasks = buildTaskTree(tasksStore.tasks[props.listId])
+    if(props.listId in tasksStore.tasks.list){
+        const treeTasks = buildTaskTree(tasksStore.tasks.list[props.listId])
 
         if(isNewTasksFormOpen.value){
             return [{list_id: props.listId}, ...treeTasks] //this will allow us to add new task form inside table header

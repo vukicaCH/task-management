@@ -3,18 +3,8 @@ import { useSpaceStore } from "./spaceStore";
 
 export const useViewsStore = defineStore('ViewsStore',() => {
     const views = reactive({
-        space: {
-            board: {},
-            list: {}
-        },
-        folder: {
-            board: {},
-            list: {}
-        },
-        list: {
-            board: {},
-            list: {}
-        }
+        space: {},
+        folder: {},
     })
 
     const currentView = ref();
@@ -23,33 +13,33 @@ export const useViewsStore = defineStore('ViewsStore',() => {
 
     const spaceStore = useSpaceStore();
 
-    const setView = (parent, parentId, type) => {
+    const setView = (parent, parentId) => {
         axiosIns
             .get(`${parent}/${parentId}/view`)
             .then(res => {
 
-                const view = res.data.views.find(view => view.type === type);
+                const view = res.data.views.find(view => view.type === 'board');
 
                 if(view){
-                    views[parent][type][parentId] = view;
+                    views[parent][parentId] = view;
                     currentView.value = view;
                 }else{
-                    createView(parent, parentId, type)
+                    createView(parent, parentId)
                 }
             })
     }
 
-    const createView = (parent, parentId, type) => {
+    const createView = (parent, parentId) => {
         axiosIns
             .post(`${parent}/${parentId}/view`,
                 {
-                    type: type,
+                    type: 'board',
                     filters:{show_closed: true},
                     settings : {show_subtasks : 2, show_closed_subtasks: false}
                 }
             )
             .then((res) => {
-                views[parent][type][parentId] = res.data.view
+                views[parent][parentId] = res.data.view
                 currentView.value = res.data.view;
             })
     }
@@ -57,7 +47,7 @@ export const useViewsStore = defineStore('ViewsStore',() => {
     watch(
         () => [spaceStore.currentTypeId, currentViewTab.value],
         () => {
-            if(currentViewTab.value !== 'overview'){
+            if(currentViewTab.value === 'board' && spaceStore.currentType !== 'list'){
                 setView(spaceStore.currentType, spaceStore.currentTypeId, currentViewTab.value)
             }
         },
