@@ -4,7 +4,7 @@ import Column from 'primevue/column';
 import { useTasksStore } from '@/stores/tasksStore';
 import { useFormsStore } from '@/stores/formsStore';
 import TaskTableNameEditor from './TaskTablePartials/TaskTableNameEditor.vue';
-import TaskTableAddSubtasksForm from './TaskTablePartials/TaskTableAddTaskForm.vue';
+import TaskTableAddTaskForm from './TaskTablePartials/TaskTableAddTaskForm.vue';
 import { Button } from 'primevue';
 import TaskTableNode from './TaskTablePartials/TaskTableNode.vue';
 
@@ -113,7 +113,7 @@ provide('openForm', openForm);
         >
             <template #body="{node}">
                 <TaskTableNameEditor v-if="node.data" :task="node.data" />
-                <TaskTableAddSubtasksForm
+                <TaskTableAddTaskForm
                     v-else
                     :top_level_parent="node?.top_level_parent"
                     :list_id="node.list_id"

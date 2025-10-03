@@ -7,23 +7,23 @@ import { ChevronLeftIcon, ChevronDownIcon, FolderIcon } from '@heroicons/vue/24/
 import TaskTable from './TaskTable.vue';
 
 const spaceStore = useSpaceStore();
-const tasksStore = useTasksStore()
-
-const getTasksForList = (listId) => {
-    if(!(listId in tasksStore.tasks.list)) tasksStore.hydrateListTasks(listId)
-}
+const tasksStore = useTasksStore();
 
 const onCollapse = (collapsed, listId) => {
-    if(!collapsed) getTasksForList(listId)
+    if(!collapsed && !(listId in tasksStore.tasks.list)) tasksStore.hydrateListTasks(listId)
 }
 
-onMounted(()=> tasksStore.getAllTasks())
-
 watch(() => spaceStore.currentTypeId, () => {
-    
-    if(spaceStore.currentType === 'list') getTasksForList(spaceStore.currentTypeId)
-    
+    if(
+        spaceStore.currentType === 'list'
+        &&
+        !(spaceStore.currentTypeId in tasksStore.tasks.list)
+    ){
+        tasksStore.hydrateListTasks(spaceStore.currentTypeId)
+    }
 },{immediate: true})
+
+onMounted(()=> tasksStore.getAllTasks())
 </script>
 
 <template>

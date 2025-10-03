@@ -11,7 +11,7 @@ const viewsStore = useViewsStore();
 const toDoTasks = ref([]);
 const completeTasks = ref([]);
 
-const loaded = computed(() => !tasksStore.loading && (spaceStore.currentTypeId in tasksStore.tasks[spaceStore.currentType]))
+const loaded = computed(() => !tasksStore.loading && (spaceStore.currentTypeId in tasksStore.boardTasks[spaceStore.currentType]))
 
 watchEffect(() => {
 
@@ -22,7 +22,7 @@ watchEffect(() => {
     const id = spaceStore.currentTypeId
     const type = spaceStore.currentType
 
-    let tasksProp = tasksStore.tasks[type];
+    let tasksProp = tasksStore.boardTasks[type];
 
     if(id in tasksProp){
 
@@ -36,16 +36,8 @@ watchEffect(() => {
 
         toDoTasks.value = toDo;
         completeTasks.value = complete;
-    }else{
-        if(type === 'list'){
-            tasksStore.hydrateListTasks(id)
-        }else{
-            if(viewsStore.currentView){
-                type === 'folder' ? 
-                    tasksStore.hydrateFolderTasks(viewsStore.currentView) :
-                    tasksStore.hydrateSpaceTasks(viewsStore.currentView)
-            }
-        }
+    }else if(viewsStore.currentView){
+        tasksStore.hydrateBoardTasks(viewsStore.currentView)
     }
 })
 </script>

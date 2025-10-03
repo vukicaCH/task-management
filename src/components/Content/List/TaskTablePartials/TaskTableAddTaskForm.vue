@@ -26,7 +26,7 @@ const taskName = ref('');
 
 const input = ref();
 
-const createTask = (e) => {
+const createTask = async (e) => {
 
     e.preventDefault();
 
@@ -34,17 +34,9 @@ const createTask = (e) => {
 
     if(props.top_level_parent) data.parent = props.top_level_parent;
 
-    axiosIns
-        .post(`list/${props.list_id}/task`, data)
-        .then(res => {
-            if(res.data.top_level_parent){
-                tasksStore.tasks.list[props.list_id] = [...tasksStore.tasks.list[props.list_id], res.data];
-            }else{
-                tasksStore.tasks.list[props.list_id] = [res.data, ...tasksStore.tasks.list[props.list_id]];
-            }
-            tasksStore.tasks.team = [...tasksStore.tasks.team, res.data]
-        })
-        .finally(()=> taskName.value = '')
+    await tasksStore.createTask(props.list_id, data)
+    
+    taskName.value = ''
 
 }
 

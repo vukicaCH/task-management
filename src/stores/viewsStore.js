@@ -5,6 +5,7 @@ export const useViewsStore = defineStore('ViewsStore',() => {
     const views = reactive({
         space: {},
         folder: {},
+        list:{}
     })
 
     const currentView = ref();
@@ -14,6 +15,9 @@ export const useViewsStore = defineStore('ViewsStore',() => {
     const spaceStore = useSpaceStore();
 
     const setView = (parent, parentId) => {
+
+        if(views[parent][parentId]) return
+
         axiosIns
             .get(`${parent}/${parentId}/view`)
             .then(res => {
@@ -45,12 +49,8 @@ export const useViewsStore = defineStore('ViewsStore',() => {
     }
 
     watch(
-        () => [spaceStore.currentTypeId, currentViewTab.value],
-        () => {
-            if(currentViewTab.value === 'board' && spaceStore.currentType !== 'list'){
-                setView(spaceStore.currentType, spaceStore.currentTypeId, currentViewTab.value)
-            }
-        },
+        () => spaceStore.currentTypeId,
+        () => setView(spaceStore.currentType, spaceStore.currentTypeId),
         {immediate: true}
     )
 
