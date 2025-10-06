@@ -4,7 +4,7 @@ import Button from 'primevue/button';
 import { useTasksStore } from '@/stores/tasksStore';
 import axiosIns from '@/axios';
 
-const props = defineProps({
+const {top_level_parent, list_id} = defineProps({
     top_level_parent: {
         type: String,
         required: false,
@@ -32,9 +32,7 @@ const createTask = async (e) => {
 
     const data = {name: taskName.value};
 
-    if(props.top_level_parent) data.parent = props.top_level_parent;
-
-    await tasksStore.createTask(props.list_id, data)
+    await tasksStore.createTask(list_id, data, top_level_parent)
     
     taskName.value = ''
 

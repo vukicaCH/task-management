@@ -16,7 +16,6 @@ const columns = computed(() => {
         'date_created',
         'date_done',
         'date_updated',
-        'linked_tasks',
         'priority',
         'start_date',
         'status'

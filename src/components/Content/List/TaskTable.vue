@@ -23,8 +23,8 @@ const isNewTasksFormOpen = ref(false)
 const toggleNewTaskForm = () => isNewTasksFormOpen.value = !isNewTasksFormOpen.value
 
 const tasks = computed(() => {
-    if(props.listId in tasksStore.tasks.list){
-        const treeTasks = buildTaskTree(tasksStore.tasks.list[props.listId])
+    if(props.listId in tasksStore.boardTasks.list){
+        const treeTasks = buildTaskTree(tasksStore.boardTasks.list[props.listId])
 
         if(isNewTasksFormOpen.value){
             return [{list_id: props.listId}, ...treeTasks] //this will allow us to add new task form inside table header
@@ -37,45 +37,25 @@ const tasks = computed(() => {
 })
 
 function buildTaskTree(tasks) {
-    // Make a lookup map: id → task
-    const taskMap = {};
-    tasks.forEach(task => {
-        taskMap[task.id] = {
+    return tasks.map(task => {
+        let children = [];
+
+        if(task.subtasks){
+            children = task.subtasks?.map(subtask => ({
+                key: task.id,
+                label: task.name,
+                parent: subtask.parent,
+                data: {...subtask},
+            }))
+        }
+
+        return {
             key: task.id,
             label: task.name,
             data: {...task},
-            children: []
-        };
-    });
-
-    const roots = [];
-
-    tasks.forEach(task => {
-        if (task.top_level_parent) {
-            if (taskMap[task.top_level_parent]) {
-                taskMap[task.top_level_parent].children.push(taskMap[task.id]);
-            }
-        } else {
-            roots.push(taskMap[task.id]);
+            children : [...children,  {top_level_parent: task.id, list_id: task.list.id}]
         }
     });
-
-    const rootsWithAddSubtasksFormIndicator = roots.map(root => {
-        if(!root.top_level_parent){
-            return {
-                    ...root,
-                    children: [
-                        ...root.children,
-                        {top_level_parent: root.key, list_id: root.data.list.id}
-                        //this will allow us to add new subtask form below other subtasks
-                    ]
-            }
-        }else{
-            return root
-        }
-    })
-
-    return rootsWithAddSubtasksFormIndicator
 }
 
 const loading = computed(() => tasksStore.loading && props.listId === tasksStore.listId)

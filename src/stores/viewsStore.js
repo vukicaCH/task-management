@@ -14,38 +14,37 @@ export const useViewsStore = defineStore('ViewsStore',() => {
 
     const spaceStore = useSpaceStore();
 
-    const setView = (parent, parentId) => {
+    const setView = async (parent, parentId) => {
 
         if(views[parent][parentId]) return
 
-        axiosIns
+        await axiosIns
             .get(`${parent}/${parentId}/view`)
-            .then(res => {
+            .then(async res => {
 
-                const view = res.data.views.find(view => view.type === 'board');
+                console.log(res)
+
+                const view = res.data.views[0];
 
                 if(view){
                     views[parent][parentId] = view;
-                    currentView.value = view;
                 }else{
-                    createView(parent, parentId)
+                    await createView(parent, parentId)
                 }
             })
     }
 
-    const createView = (parent, parentId) => {
-        axiosIns
-            .post(`${parent}/${parentId}/view`,
-                {
-                    type: 'board',
-                    filters:{show_closed: true},
-                    settings : {show_subtasks : 2, show_closed_subtasks: false}
-                }
-            )
-            .then((res) => {
-                views[parent][parentId] = res.data.view
-                currentView.value = res.data.view;
-            })
+    const createView = async (parent, parentId) => {
+
+        const data = {
+            type: 'board',
+            filters:{show_closed: true},
+            settings : {show_subtasks : 2, show_closed_subtasks: true}
+        }       
+
+        await axiosIns
+            .post(`${parent}/${parentId}/view`,data)
+            .then((res) => views[parent][parentId] = res.data.view)
     }
 
     watch(
@@ -59,5 +58,6 @@ export const useViewsStore = defineStore('ViewsStore',() => {
         currentView,
         currentViewTab,
         createView,
+        setView
     }
 })

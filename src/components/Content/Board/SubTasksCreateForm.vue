@@ -1,7 +1,5 @@
 <script setup>
-import axiosIns from '@/axios'
 import { useTasksStore } from '@/stores/tasksStore'
-import { useViewsStore } from '@/stores/viewsStore'
 import { onClickOutside } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
 
@@ -13,9 +11,8 @@ const props = defineProps({
 })
 
 const tasksStore = useTasksStore()
-const viewsStore = useViewsStore()
 
-const emit = defineEmits('close')
+const emit = defineEmits(['close', 'subtask-created'])
 
 const taskName = ref('')
 
@@ -26,19 +23,17 @@ onMounted(() => inputText.value.focus())
 
 onClickOutside(target, () => emit('close'))
 
-const createSubtask = async () => {
+const createSubtask = () => {
 
     const {list, id} = props.task;
 
-    axiosIns
-        .post(`list/${list.id}/task`,{name: taskName.value, parent: id})
-        .then(res => {
-            const view = {...viewsStore.currentView};
-            tasksStore.hydrateSpaceTasks(view)
-        })
-        .finally(() => {
-            taskName.value = ''
-        })
+    tasksStore
+        .createTask(list.id, {name: taskName.value}, id)
+        .then(res => console.log(res))
+
+    taskName.value = ''
+
+
 }
 </script>
 

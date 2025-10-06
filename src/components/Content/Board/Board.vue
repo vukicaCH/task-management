@@ -11,14 +11,13 @@ const viewsStore = useViewsStore();
 const toDoTasks = ref([]);
 const completeTasks = ref([]);
 
-const loaded = computed(() => !tasksStore.loading && (spaceStore.currentTypeId in tasksStore.boardTasks[spaceStore.currentType]))
+const view = computed(() => {
+    return viewsStore.views[spaceStore.currentType][spaceStore.currentTypeId]
+})
+
+const loaded = computed(() => spaceStore.currentTypeId in tasksStore.boardTasks[spaceStore.currentType])
 
 watchEffect(() => {
-
-    // const hhh = spaceStore.currentTypeId
-
-    // spaceStore.getSpaceView()
-
     const id = spaceStore.currentTypeId
     const type = spaceStore.currentType
 
@@ -36,10 +35,14 @@ watchEffect(() => {
 
         toDoTasks.value = toDo;
         completeTasks.value = complete;
-    }else if(viewsStore.currentView){
-        tasksStore.hydrateBoardTasks(viewsStore.currentView)
+    }else if(view.value){
+        tasksStore.hydrateBoardTasks(view.value)
     }
 })
+
+const optimisticallyCompleteTask = (id) => {
+    toDoTasks.value = toDoTasks.value.filter(task => task.id !== id)
+}
 </script>
 
 <template>
@@ -49,7 +52,7 @@ watchEffect(() => {
             To Do Tasks: {{ toDoTasks.length }}
 
             <div class="rounded-md !space-y-0.75 p-1 w-[275px] h-[500px] overflow-y-auto bg-gray-700">
-                <BoardTask v-for="task in toDoTasks" :task="task" :key="task.id" />
+                <BoardTask v-for="task in toDoTasks" :task="task" :key="task.id" @task-completed="(id) => optimisticallyCompleteTask(id)" />
             </div>
         </div>
 

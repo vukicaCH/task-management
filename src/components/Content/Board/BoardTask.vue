@@ -8,19 +8,23 @@ import { InputText } from 'primevue';
 import SubTasksCreateForm from './SubTasksCreateForm.vue';
 import BoardTaskDatePicker from './BoardTaskDatePicker.vue';
 
-const props = defineProps({
+const {task} = defineProps({
     task:{
         type: Object,
         required: true,
     }
 })
 
+const emit = defineEmits(['task-completed'])
+
 const tasksStore = useTasksStore();
 
 const boardTaskRef = useTemplateRef('boardTaskRef')
 const isHovered = useElementHover(boardTaskRef)
 
-const taskName = ref(props.task.name)
+const taskData = reactive({...task});
+
+watch(() => task, () => Object.assign(taskData, task))
 
 const open = ref(false);
 const editMode = ref(false);
@@ -28,7 +32,7 @@ const newSubTaskFormOpen = ref(false)
 
 watch(editMode, (newVal) => {
     if(!newVal){
-        if(taskName.value !== props.task.name) renameTask()
+        if(taskData.name !== task.name) renameTask()
     }
 })
 
@@ -39,9 +43,20 @@ const toggleFormOpen = () => {
     newSubTaskFormOpen.value = !newSubTaskFormOpen.value;
 }
 
-const completeTask = () => tasksStore.editTask(props.task.id, {status: 'complete'})
+const completeTask = () => {
+    emit('task-completed', task.id)
 
-const renameTask = () => tasksStore.editTask(props.task.id, {name: taskName.value})
+    tasksStore.editTask(task.id, {status: 'complete'})
+}
+
+const renameTask = () => {
+    tasksStore.editTask(task.id, {name: taskData.name})
+}
+
+const optimisticallyCompleteSubTask = (id) => {
+    taskData.subtasks = taskData.subtasks.filter(subtask => subtask.id !== id);
+    taskData.subtasks_count = taskData.subtasks.length
+}
 
 </script>
 
@@ -50,9 +65,9 @@ const renameTask = () => tasksStore.editTask(props.task.id, {name: taskName.valu
         <div class="flex justify-between relative p-2 !mb-5 text-sm">
             <div>
                 <div v-if="editMode">
-                    <InputText @vue:mounted="e => e.el.focus()" @blur="editMode = false" v-model="taskName" />
+                    <InputText @vue:mounted="e => e.el.focus()" @blur="editMode = false" v-model="taskData.name" />
                 </div>
-                <div v-else>{{ task.name }}</div>
+                <div v-else>{{ taskData.name }}</div>
             </div>
             <div
                 v-if="isHovered && !editMode"
@@ -76,16 +91,16 @@ const renameTask = () => tasksStore.editTask(props.task.id, {name: taskName.valu
             <BoardTaskDatePicker :task="task" />
         </div>
 
-        <div v-if="task.subtasks" class="p-0.5">
+        <div v-if="taskData.subtasks_count" class="p-0.5">
             <button @click="toggleOpen" class="cursor-pointer w-full rounded-md hover:bg-gray-600 text-xs flex gap-1 items-center p-1">
                 <play-icon ref="toggler" class="w-3 h-3 transition" :class="{'rotate-90': open}" />
-                <span>Subtasks: {{ task.subtasks_count ?? task.subtasks.length }}</span>
+                <span>Subtasks: {{ taskData.subtasks_count ?? taskData.subtasks.length }}</span>
             </button>
         </div>
     </div>
 
     <div v-if="open" class="pl-3 w-full !space-y-0.75">
-        <BoardTask v-for="task in task.subtasks" :task="task" :key="task.id" />
+        <BoardTask v-for="task in taskData.subtasks" :task="task" :key="task.id" @task-completed="(id) => optimisticallyCompleteSubTask(id)" />
         <SubTasksCreateForm v-if="newSubTaskFormOpen" :task="task" @close="toggleFormOpen" />
     </div>
 </template>
