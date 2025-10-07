@@ -63,30 +63,33 @@ export const useTasksStore = defineStore('TasksStore',{
             axiosIns
                 .put(`/task/${taskId}`, payload)
                 .then((res) => {
-                    this.handleTasksUpdates(res.data)
+
+                    let mainTask = null;
+
+                    const {list, folder, space, id, parent} = res.data;
+
+                    if(parent){
+                        if(list.id in this.boardTasks.list) mainTask = this.boardTasks.list[list.id].find(task => task.id === parent);
+                        else if(folder.id in this.boardTasks.folder) mainTask = this.boardTasks.folder[folder.id].find(task => task.id === parent)
+                        else mainTask = this.boardTasks.space[space.id].find(task => task.id === parent)
+                    }else{
+                        mainTask = res.data;
+                    }
+
+                    if(mainTask?.subtasks){
+                        const mainTaskSubtasks = mainTask.subtasks.filter(subtask => subtask.status === 'to do');
+
+                        mainTask = {...mainTask, subtasks: mainTaskSubtasks, subtasks_count: mainTaskSubtasks.length}
+                    }
+
+                    if(list.id in this.boardTasks.list) this.boardTasks.list[list.id] = this.boardTasks.list[list.id].map(task => task.id === mainTask.id ? mainTask : task);
+                    if(folder.id in this.boardTasks.list) this.boardTasks.folder[folder.id] = this.boardTasks.folder[folder.id].map(task => task.id === mainTask.id ? mainTask : task);
+                    if(space.id in this.boardTasks.space) this.boardTasks.space[space.id] = this.boardTasks.space[space.id].map(task => task.id === mainTask.id ? mainTask : task);
                 })
                 .finally(()=> {
                     this.loading = false;
                     this.listId = null;
                 })
-        },
-
-        handleTasksUpdates(task){
-            const viewsStore = useViewsStore();
-
-            const {list, folder, space, id} = task;
-
-            const listView = viewsStore.views.list[list.id];
-            const folderView = viewsStore.views.folder[folder.id];
-            const spaceView = viewsStore.views.space[space.id];
-
-            const callbacks = [];
-
-            if(listView) callbacks.push(() => this.hydrateBoardTasks(listView))
-            if(folderView) callbacks.push(() => this.hydrateBoardTasks(folderView))
-            if(spaceView) callbacks.push(() => this.hydrateBoardTasks(spaceView))    
-
-            Promise.all(callbacks.map(callback => callback()))
         },
 
         toggleTaskLink(to,from, linked){
