@@ -46,16 +46,24 @@ const toggleFormOpen = () => {
 const completeTask = () => {
     emit('task-completed', task.id)
 
-    tasksStore.editTask(task.id, {status: 'complete'})
+    tasksStore.editTask(task, {status: 'complete'})
 }
 
 const renameTask = () => {
-    tasksStore.editTask(task.id, {name: taskData.name})
+    tasksStore.editTask(task, {name: taskData.name})
 }
 
 const optimisticallyCompleteSubTask = (id) => {
     taskData.subtasks = taskData.subtasks.filter(subtask => subtask.id !== id);
     taskData.subtasks_count = taskData.subtasks.length
+}
+
+const optimisticallyChangeDates = (dates) => {
+
+    const {start_date, due_date} = dates;
+
+    taskData.start_date = start_date;
+    taskData.due_date = due_date;
 }
 
 </script>
@@ -88,7 +96,7 @@ const optimisticallyCompleteSubTask = (id) => {
         </div>
 
         <div class="p-2">
-            <BoardTaskDatePicker :task="task" />
+            <BoardTaskDatePicker @dates-changed="(dates) => optimisticallyChangeDates(dates)" :task="taskData" />
         </div>
 
         <div v-if="taskData.subtasks_count" class="p-0.5">

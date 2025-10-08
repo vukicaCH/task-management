@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { Popover } from 'primevue';
 import { DatePicker } from 'primevue';
 import BoardTaskDatesForDatePicker from './BoardTaskDatesForDatePicker.vue';
+import { Button } from 'primevue';
 
 const props = defineProps({
     task: {
@@ -12,6 +13,8 @@ const props = defineProps({
         required: true,
     }
 })
+
+const emit = defineEmits(['dates-changed'])
 
 const tasksStore = useTasksStore()
 
@@ -37,12 +40,16 @@ watch([startDate, dueDate], () => {
 })
 
 const setDates = () => {
+    op.value.hide()
+
     if(!canEdit.value) return
+
+    emit('dates-changed', {start_date: startDate.value, due_date: dueDate.value})
 
     const start_date = dayjs(Number(startDate.value)).valueOf()
     const due_date = dayjs(Number(dueDate.value)).valueOf()
 
-    tasksStore.editTask(props.task.id, {start_date, due_date})
+    tasksStore.editTask(props.task, {start_date, due_date})
 }
 
 const getFormattedDate = (date) => dayjs(Number(date)).format('DD/MM/YYYY')
@@ -64,8 +71,8 @@ const toolTipText = computed(() => {
         </button>
     </div>
 
-    <Popover ref="op" @hide="setDates">
-        <div class="flex gap-1">
+    <Popover ref="op">
+        <div class="flex flex-col gap-2">
             <div class="flex flex-col gap-0.5">
                 <span class="text-xs !font-medium">Start Date</span>
                 <DatePicker
@@ -92,6 +99,8 @@ const toolTipText = computed(() => {
                     }"    
                 />
             </div>
+
+            <Button @click="setDates">Save</Button>
         </div>
     </Popover>
 </template>

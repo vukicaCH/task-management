@@ -29,11 +29,8 @@ const createSubtask = () => {
 
     tasksStore
         .createTask(list.id, {name: taskName.value}, id)
-        .then(res => console.log(res))
 
     taskName.value = ''
-
-
 }
 </script>
 

@@ -25,7 +25,7 @@ const onCollapse = async (collapsed, listId) => {
 
     if(!view.value) await viewsStore.setView('list', listId);
 
-    if(!collapsed && !(listId in tasksStore.tasks.list)) tasksStore.hydrateBoardTasks(view.value)
+    if(!collapsed && !(listId in tasksStore.boardTasks.list)) tasksStore.hydrateBoardTasks(view.value)
 }
 
 watchEffect(() => {

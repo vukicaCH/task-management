@@ -7,6 +7,7 @@ import TaskTableNameEditor from './TaskTablePartials/TaskTableNameEditor.vue';
 import TaskTableAddTaskForm from './TaskTablePartials/TaskTableAddTaskForm.vue';
 import { Button } from 'primevue';
 import TaskTableNode from './TaskTablePartials/TaskTableNode.vue';
+import { useViewsStore } from '@/stores/viewsStore';
 
 const props = defineProps({
     listId:{
@@ -17,6 +18,7 @@ const props = defineProps({
 
 const tasksStore = useTasksStore();
 const formsStore = useFormsStore();
+const viewsStore = useViewsStore();
 
 const isNewTasksFormOpen = ref(false)
 
@@ -58,7 +60,7 @@ function buildTaskTree(tasks) {
     });
 }
 
-const loading = computed(() => tasksStore.loading && props.listId === tasksStore.listId)
+const loaded = computed(() => props.listId in tasksStore.boardTasks.list)
 
 const getColHeader = (col) => {
     return col.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -75,7 +77,7 @@ provide('openForm', openForm);
 <template>
     <TreeTable
         :value="tasks"
-        :loading="loading"
+        :loading="!loaded"
     >
         <template #header>
             <Button

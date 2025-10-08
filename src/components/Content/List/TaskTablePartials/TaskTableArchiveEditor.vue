@@ -1,17 +1,16 @@
 <script setup>
 import { Select } from 'primevue';
-import { useSpaceStore } from '@/stores/spaceStore';
 import { useTasksStore } from '@/stores/tasksStore';
 import { onClickOutside } from '@vueuse/core'
 
-const props = defineProps({
+const {task} = defineProps({
     task:{
         type: Object,
         required: true,
     },
 })
 
-const taskRef = toRef(()=> props.task)
+const taskRef = toRef(()=> task)
 
 const tasksStore = useTasksStore();
 
@@ -33,11 +32,8 @@ const options = [
 onClickOutside(
     target,
     () => {
-
-        console.log('hey')
-
         if(editMode.value && canEditTask.value){
-            tasksStore.editTask(props.task.id, {archived: archived.value})
+            tasksStore.editTask(task, {archived: archived.value})
         }
 
         canEditTask.value = false

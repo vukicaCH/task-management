@@ -26,20 +26,21 @@ const taskName = ref('');
 
 const input = ref();
 
-const createTask = async (e) => {
+const createTask = (e) => {
 
     e.preventDefault();
 
     const data = {name: taskName.value};
 
-    await tasksStore.createTask(list_id, data, top_level_parent)
+    tasksStore.createTask(list_id, data, top_level_parent)
     
     taskName.value = ''
-
+    
+    handleCancelClick()
 }
 
 const handleCancelClick = () => {
-    if(!props.top_level_parent) emit('close')
+    if(!top_level_parent) emit('close')
     else editMode.value = false
 }
 </script>

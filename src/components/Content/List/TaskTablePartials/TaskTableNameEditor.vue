@@ -3,14 +3,14 @@ import { InputText } from 'primevue';
 import { useTasksStore } from '@/stores/tasksStore';
 import { onClickOutside } from '@vueuse/core'
 
-const props = defineProps({
+const {task} = defineProps({
     task:{
         type: Object,
         required: true,
     },
 })
 
-const taskRef = toRef(()=> props.task)
+const taskRef = toRef(()=> task)
 
 const tasksStore = useTasksStore();
 
@@ -28,7 +28,7 @@ onClickOutside(
     target,
     () => {
         if(editMode.value && canEditTask.value){
-            tasksStore.editTask(props.task.id, {name: name.value})
+            tasksStore.editTask(task, {name: name.value})
         }
 
         canEditTask.value = false

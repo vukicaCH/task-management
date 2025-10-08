@@ -34,19 +34,41 @@ export const useTasksStore = defineStore('TasksStore',{
             axiosIns
                 .get(`view/${id}/task`)
                 .then(res => {
+
+                    console.log(`done for ${parentType} ${parentTypeId}`)
+
                     this.boardTasks[parentType][parentTypeId] = res.data.tasks
                 })
                 .finally(() => this.loading = false)
         },
 
-        async createTask(listId, taskData, taskParentId = null){
-            return await axiosIns
+        createTask(listId, taskData, taskParentId = null){
+            axiosIns
                 .post(`list/${listId}/task`, {...taskData, parent: taskParentId})
                 .then(res => {
+                    const viewsStore = useViewsStore()
 
-                    this.handleTasksUpdates(res.data)
+                    const {list, folder, space} = res.data;
 
-                    return res.data
+                    if(list.id in this.boardTasks.list){
+                        const view = viewsStore.views.list[list.id];
+
+                        this.hydrateBoardTasks(view)
+                    }
+
+                    if(folder.id in this.boardTasks.folder){
+                        const view = viewsStore.views.folder[folder.id];
+
+                        this.hydrateBoardTasks(view)
+                    }
+
+                    if(space.id in this.boardTasks.space){
+                        const view = viewsStore.views.space[space.id];
+
+                        this.hydrateBoardTasks(view)
+                    }
+
+
                 })
         },
 
@@ -56,36 +78,12 @@ export const useTasksStore = defineStore('TasksStore',{
             })
         },
 
-        editTask(taskId, payload){
+        editTask(task, payload){
 
             this.loading = true;
 
             axiosIns
-                .put(`/task/${taskId}`, payload)
-                .then((res) => {
-
-                    let mainTask = null;
-
-                    const {list, folder, space, id, parent} = res.data;
-
-                    if(parent){
-                        if(list.id in this.boardTasks.list) mainTask = this.boardTasks.list[list.id].find(task => task.id === parent);
-                        else if(folder.id in this.boardTasks.folder) mainTask = this.boardTasks.folder[folder.id].find(task => task.id === parent)
-                        else mainTask = this.boardTasks.space[space.id].find(task => task.id === parent)
-                    }else{
-                        mainTask = res.data;
-                    }
-
-                    if(mainTask?.subtasks){
-                        const mainTaskSubtasks = mainTask.subtasks.filter(subtask => subtask.status === 'to do');
-
-                        mainTask = {...mainTask, subtasks: mainTaskSubtasks, subtasks_count: mainTaskSubtasks.length}
-                    }
-
-                    if(list.id in this.boardTasks.list) this.boardTasks.list[list.id] = this.boardTasks.list[list.id].map(task => task.id === mainTask.id ? mainTask : task);
-                    if(folder.id in this.boardTasks.list) this.boardTasks.folder[folder.id] = this.boardTasks.folder[folder.id].map(task => task.id === mainTask.id ? mainTask : task);
-                    if(space.id in this.boardTasks.space) this.boardTasks.space[space.id] = this.boardTasks.space[space.id].map(task => task.id === mainTask.id ? mainTask : task);
-                })
+                .put(`/task/${task.id}`, payload)
                 .finally(()=> {
                     this.loading = false;
                     this.listId = null;

@@ -4,14 +4,14 @@ import { useSpaceStore } from '@/stores/spaceStore';
 import { useTasksStore } from '@/stores/tasksStore';
 import { onClickOutside } from '@vueuse/core'
 
-const props = defineProps({
+const {task} = defineProps({
     task:{
         type: Object,
         required: true,
     },
 })
 
-const taskRef = toRef(()=> props.task)
+const taskRef = toRef(()=> task)
 
 const tasksStore = useTasksStore();
 const spaceStore = useSpaceStore();
@@ -32,7 +32,7 @@ onClickOutside(
     target,
     () => {
         if(editMode.value && canEditTask.value){
-            tasksStore.editTask(props.task.id, {status: status.value.status})
+            tasksStore.editTask(task, {status: status.value.status})
         }
 
         canEditTask.value = false

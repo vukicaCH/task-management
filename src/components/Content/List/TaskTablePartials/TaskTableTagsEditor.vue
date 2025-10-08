@@ -2,7 +2,7 @@
 import { useSpaceStore } from '@/stores/spaceStore'
 import _ from 'lodash'
 
-const props = defineProps({
+const {task} = defineProps({
     task: {
         type: Object,
         required: true
@@ -16,7 +16,7 @@ const openForm = inject('openForm')
 const reactiveTags = computed(() => {
     const spaceId = props.task.space.id;
 
-    const tagNames = [...props.task.tags.map(tag => tag.name)]
+    const tagNames = [task.tags.map(tag => tag.name)]
 
     return spaceStore.tags[spaceId].filter(tag => tagNames.includes(tag.name))
 })

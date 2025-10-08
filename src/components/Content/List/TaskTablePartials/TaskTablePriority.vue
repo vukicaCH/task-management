@@ -4,14 +4,14 @@ import { onClickOutside } from '@vueuse/core'
 import { useTemplateRef, watchEffect } from 'vue'
 import { useTasksStore } from '@/stores/tasksStore';
 
-const props = defineProps({
+const {task} = defineProps({
     task: {
         type: Object,
         required: true
     }
 })
 
-const taskRef = toRef(()=> props.task)
+const taskRef = toRef(()=> task)
 
 const tasksStore = useTasksStore();
 
@@ -50,7 +50,7 @@ onClickOutside(
 
             const priorityVal = priority.value?.id ?? null;
 
-            tasksStore.editTask(props.task.id, {priority: priorityVal})
+            tasksStore.editTask(task, {priority: priorityVal})
         }
 
         canEditTask.value = false;
