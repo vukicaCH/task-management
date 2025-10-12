@@ -11,14 +11,15 @@ export const useTasksStore = defineStore('TasksStore',{
         },
         loading: false,
         listId: null,
-        columns:['due_date', 'date_done'],
+        columns: ['status'],
         readOnlyFields: ['date_done','date_updated','date_closed','date_created','creator'],
         allTasks:[],
         boardTasks:{
             space: {},
             folder: {},
             list: {},
-        }
+        },
+        listEditMode: false
     }),
 
     actions:{
@@ -81,6 +82,8 @@ export const useTasksStore = defineStore('TasksStore',{
         editTask(task, payload){
 
             this.loading = true;
+
+            console.log(task)
 
             axiosIns
                 .put(`/task/${task.id}`, payload)

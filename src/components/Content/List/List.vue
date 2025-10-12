@@ -12,27 +12,19 @@ const viewsStore = useViewsStore();
 const tasksToUpdate = ref([])
 let updateTimeout = null;
 
-tasksStore.$onAction(
-  ({
-    name,
-    args,
-  }) => {
+watch(() => tasksStore.listEditMode, (newVal) => {
 
-    if(name === 'editTask' ){
+    if(newVal){
+        if(updateTimeout) clearTimeout(updateTimeout)
+        return
+    }
 
-        console.log(args[0])
 
-        let editedTask = args[0];
-
-        if(editedTask.parent){
-            editedTask = tasksStore.boardTasks[spaceStore.currentType][spaceStore.currentTypeId].find(task => task.id === editedTask.parent)
-        }
-
-        tasksToUpdate.value.push(editedTask);
+    if(!newVal && tasksToUpdate.value.length){
 
         if(updateTimeout) clearTimeout(updateTimeout)
 
-        updateTimeout = setTimeout(() => {
+        updateTimeout = setTimeout(()=> {
             const boardTasksToUpdate = {
                 space: [],
                 folder: [],
@@ -59,7 +51,18 @@ tasksStore.$onAction(
             })
 
             Promise.all(callbacks.map(callback => callback()))
-        }, 1500)
+        }, 2000)
+    }
+})
+
+tasksStore.$onAction(
+  ({
+    name,
+    args,
+  }) => {
+
+    if(name === 'editTask' ){
+       tasksToUpdate.value.push(args[0]);
     }
   }
 )

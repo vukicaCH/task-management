@@ -37,6 +37,7 @@ onClickOutside(
 
         canEditTask.value = false
         editMode.value = false
+        tasksStore.listEditMode = false;
     },
     {ignore: [ignoreElSelector]}
 )
@@ -54,7 +55,7 @@ watch(status, () => canEditTask.value = status.value.id != taskRef.value.status?
         />
     </div>
     <div v-else>
-        <div @click="() => {editMode = true; tasksStore.currentTaskEdit = task}" :style="{borderColor: status.color, color: status.color}" class="cursor-pointer border px-2 py-1 rounded-md">
+        <div @click="() => {editMode = true; tasksStore.listEditMode = true; tasksStore.currentTaskEdit = task}" :style="{borderColor: status.color, color: status.color}" class="cursor-pointer border px-2 py-1 rounded-md">
             {{ status.status }}
         </div>
     </div>
