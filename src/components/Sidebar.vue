@@ -1,15 +1,13 @@
 <script setup>
 import { useSpaceStore } from '@/stores/spaceStore';
 import Space from './Space.vue';
-import Create from './Space/Forms/Create.vue';
+import Create from '../forms/Space/Create.vue';
 import { Dialog } from 'primevue';
 import { PlusIcon } from '@heroicons/vue/24/outline'
+import { useFormsStore } from '@/stores/formsStore';
 
 const spaceStore = useSpaceStore();
-
-const visible = ref(false)
-
-const openCreateSpaceForm = () => visible.value = true;
+const formsStore = useFormsStore()
 
 onMounted(() => {
     spaceStore.hydrateSpaces()
@@ -21,7 +19,7 @@ onMounted(() => {
     <div class="flex flex-col gap-3">
         <div class="flex justify-between items-center text-2xl text-white">
             <span>Spaces</span>
-            <button @click="openCreateSpaceForm" class="rounded-lg hover:bg-gray-700 p-1 cursor-pointer">
+            <button @click="formsStore.toggleForm('CreateSpace')" class="rounded-lg hover:bg-gray-700 p-1 cursor-pointer">
                 <PlusIcon class="w-5 h-5" />
             </button>
         </div>
@@ -31,8 +29,4 @@ onMounted(() => {
         </div>
         <div v-else>Loading...</div>
     </div>
-
-    <Dialog v-model:visible="visible" modal header="Create Space">
-        <Create @close="() => visible = false" />
-    </Dialog>
 </template>

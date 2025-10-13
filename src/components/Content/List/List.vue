@@ -51,6 +51,8 @@ watch(() => tasksStore.listEditMode, (newVal) => {
             })
 
             Promise.all(callbacks.map(callback => callback()))
+
+            tasksToUpdate.value = []
         }, 2000)
     }
 })

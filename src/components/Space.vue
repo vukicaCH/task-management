@@ -2,11 +2,9 @@
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
 import SpaceMenu from './SpaceMenu.vue';
 import SpaceItems from './SpaceItems.vue';
-import Form from './Space/Forms/Form.vue';
-import { Dialog } from 'primevue';
 import { useSpaceStore } from '@/stores/spaceStore';
 
-const props = defineProps({
+const {space} = defineProps({
     space:{
         type: Object,
         required: true,
@@ -24,7 +22,7 @@ const toggleSpaceOpen = () => open.value = !open.value;
 
 const openSpace = () => {
     open.value = true
-    spaceStore.setCurrentSpace(props.space.id, true)
+    spaceStore.setCurrentSpace(space.id, true)
 }
 
 const openCurrentForm = (formName) => {
@@ -36,12 +34,6 @@ const closeCurrentForm = () => visible.value = false;
 
 provide('close', closeCurrentForm)
 provide('open', openCurrentForm)
-
-const header = computed(() => {
-    if(currentForm.value.startsWith('Create')) return currentForm.value.replace(/([A-Z])/g, ' $1')
-
-    return `${currentForm.value} Space`
-})
 </script>
 
 <template>
@@ -67,18 +59,14 @@ const header = computed(() => {
                     {{ space.name }}
                 </div> 
                 <div class="flex gap-1 col-span-2 justify-self-end">
-                    <SpaceMenu />
+                    <SpaceMenu :space="space" />
                 </div>
             </div>
             <div class="col-start-2 col-end-9">
                 <div v-if="open">
-                    <SpaceItems :space-id="space.id" />
+                    <SpaceItems :space="space" />
                 </div>
             </div>
         </div>
     </div>
-
-    <Dialog v-model:visible="visible" modal :header="header">
-        <Form :current-form="currentForm" :space="space" />
-    </Dialog>
 </template>

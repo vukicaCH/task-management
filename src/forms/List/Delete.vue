@@ -1,31 +1,24 @@
 <script setup>
 import axiosIns from '@/axios'
+import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 
-const props = defineProps({
-  list:{
-    type: Object,
-    required: true,
-  },
-})
-
-const close = inject('close')
-
 const spaceStore = useSpaceStore()
+const formsStore = useFormsStore()
 
 const deleteList = (e) => {
     e.preventDefault()
 
     axiosIns
-        .delete(`list/${props.list.id}`)
+        .delete(`list/${formsStore.list.id}`)
         .then(()=> {
-            if(!props.list.folder.hidden){
-                spaceStore.removeListFromFolder(props.list)
+            if(!formsStore.list.folder.hidden){
+                spaceStore.removeListFromFolder(formsStore.list)
             }else{
-                spaceStore.removeListFromSpace(props.list)
+                spaceStore.removeListFromSpace(formsStore.list)
             }
 
-            close()
+            formsStore.toggleForm()
         })
 }
 </script>

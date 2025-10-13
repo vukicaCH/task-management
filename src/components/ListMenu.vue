@@ -1,8 +1,21 @@
 <script setup>
 import Menu from 'primevue/menu';
 import { EllipsisHorizontalIcon } from '@heroicons/vue/24/outline'
+import { useFormsStore } from '@/stores/formsStore';
 
-const open = inject('open')
+const {list} = defineProps({
+    list:{
+        type: Object,
+        required: true
+    }
+})
+
+const formsStore = useFormsStore()
+
+const setForm = (formName) => {
+    formsStore.toggleForm(formName)
+    formsStore.setFormList(list)    
+}
 
 const menu = ref();
 
@@ -12,15 +25,11 @@ const items = ref([
         items: [
             {
                 label: 'Edit',
-                command: () => open('Edit')
+                command: () => setForm('EditList')
             },
             {
                 label: 'Delete',
-                command: () => open('Delete')
-            },
-            {
-                label: 'Move',
-                command: () => open('Move')
+                command: () => setForm('DeleteList')
             }
         ]
     }

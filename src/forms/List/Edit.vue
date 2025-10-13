@@ -1,25 +1,18 @@
 <script setup>
 import axiosIns from '@/axios'
+import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 
-const props = defineProps({
-  list:{
-    type: Object,
-    required: true,
-  },
-})
-
-const close = inject('close')
-
 const spaceStore = useSpaceStore()
+const formsStore = useFormsStore()
 
-const listName = ref(props.list.name)
+const listName = ref(formsStore.list.name)
 
 const editList = (e) => {
     e.preventDefault()
 
     axiosIns
-        .put(`list/${props.list.id}`, {name: listName.value})
+        .put(`list/${formsStore.list.id}`, {name: listName.value})
         .then(async (res) => {
             const {space, folder} = res.data;
 
@@ -31,7 +24,7 @@ const editList = (e) => {
                 return spaceStore.hydrateFolderLists(folder.id)
             }
         })
-        .then(() => close())
+        .then(() => formsStore.toggleForm())
 }
 </script>
 

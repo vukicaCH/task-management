@@ -1,8 +1,21 @@
 <script setup>
 import Menu from 'primevue/menu';
 import { PlusIcon } from '@heroicons/vue/24/outline'
+import { useFormsStore } from '@/stores/formsStore';
 
-const open = inject('open')
+const {folder} = defineProps({
+    folder:{
+        type: Object,
+        required: true 
+    }   
+})
+
+const formsStore = useFormsStore()
+
+const setForm = (formName) => {
+    formsStore.toggleForm(formName)
+    formsStore.setFormFolder(folder)
+}
 
 const menu = ref();
 
@@ -12,7 +25,7 @@ const items = ref([
         items: [
             {
                 label: 'List',
-                command: () => open('Create')
+                command: () => setForm('CreateList')
             },
             {
                 label: 'Document',

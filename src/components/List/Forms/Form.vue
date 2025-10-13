@@ -1,6 +1,6 @@
 <script setup>
-import Edit from './Edit.vue';
-import Delete from './Delete.vue';
+import Edit from '../../../forms/List/Edit.vue';
+import Delete from '../../../forms/List/Delete.vue';
 import Move from './Move.vue';
 import { toRef } from 'vue';
 

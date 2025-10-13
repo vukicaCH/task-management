@@ -1,36 +1,30 @@
 <script setup>
 import axiosIns from '@/axios'
+import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 
-const props = defineProps({
-    folder:{
-        type:Object,
-        required: true,
-    }
-})
-
-const close = inject('close')
+const formsStore = useFormsStore()
 
 const spaceStore = useSpaceStore()
 
-const deleteFolder = (e) => {
+const deleteSpace = (e) => {
     e.preventDefault()
 
     axiosIns
-        .delete(`folder/${props.folder.id}`)
+        .delete(`/space/${formsStore.space.id}`)
         .then(()=>{
-            spaceStore.removeFolder(props.folder)
-            close()
+            spaceStore.removeSpace(formsStore.space.id)
+            formsStore.toggleForm()
         })
 }
 </script>
 
 <template>
     <div>
-        <form @submit="(e) => deleteFolder(e)">
+        <form @submit="(e) => deleteSpace(e)">
 
             <p class="text-surface-500 dark:text-surface-400">
-                Are you sure you want to delete this folder?
+                Are you sure you want to delete this space (<span class="!font-medium">{{formsStore.space.name.toUpperCase() }})</span>?
             </p>
 
             <div>

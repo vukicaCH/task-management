@@ -1,36 +1,26 @@
 <script setup>
 import axiosIns from '@/axios'
+import { useFormsStore } from '@/stores/formsStore';
 import { useSpaceStore } from '@/stores/spaceStore';
 import Select from 'primevue/select';
 
-const props = defineProps({
-    folder:{
-        type: Object,
-        required:false,
-    },
-
-    space:{
-        type: Object,
-        required: false
-    }
-})
-
 const spaceStore = useSpaceStore();
+const formsStore = useFormsStore();
 
-const close = inject('close')
-
-const selectedFolderId = ref(props.folder?.id)
+const selectedFolderId = ref(formsStore.folder?.id)
 
 const listName = ref('');
 
-const options = computed(() => spaceStore.spaces.map(space => ({name: space.name, id: space.id, items: spaceStore.folders[space.id]})))
+const options = computed(
+        () => spaceStore.spaces.map(space => ({name: space.name, id: space.id, items: spaceStore.folders[space.id]}))
+)
 
 const createList = async (e) => {
     e.preventDefault()
 
-    if(props.space){
+    if(formsStore.space){
         await axiosIns
-        .post(`space/${props.space.id}/list`, {name: listName.value})
+        .post(`space/${formsStore.space.id}/list`, {name: listName.value})
         .then((res) => {
             spaceStore.addListToSpace(res.data)
         })
@@ -42,7 +32,7 @@ const createList = async (e) => {
         })
     }
 
-    close()
+    formsStore.toggleForm()
 }
 </script>
 
@@ -58,7 +48,7 @@ const createList = async (e) => {
                     <input v-model="listName" class="border border-white" />
                 </div>
 
-                <div v-if="folder">
+                <div v-if="formsStore.folder">
                     <Select
                         :default-value="selectedFolderId"
                         :options="options"

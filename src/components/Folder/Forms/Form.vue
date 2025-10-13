@@ -1,7 +1,7 @@
 <script setup>
-import Create from '@/components/List/Forms/Create.vue';
-import Edit from './Edit.vue';
-import Delete from './Delete.vue';
+import Create from '@/forms/List/Create.vue';
+import Edit from '../../../forms/Folder/Edit.vue';
+import Delete from '../../../forms/Folder/Delete.vue';
 import Move from './Move.vue';
 import { toRef } from 'vue';
 

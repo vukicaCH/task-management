@@ -1,29 +1,22 @@
 <script setup>
 import axiosIns from '@/axios'
+import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 
-const props = defineProps({
-    folder:{
-        type:Object,
-        required: true,
-    }
-})
-
-const close = inject('close')
-
 const spaceStore = useSpaceStore()
+const formsStore = useFormsStore()
 
-const folderName = ref(props.folder.name)
+const folderName = ref(formsStore.folder.name)
 
 const editFolder = (e) => {
     e.preventDefault()
 
     axiosIns
-        .put(`folder/${props.folder.id}`, {name: folderName.value})
+        .put(`folder/${formsStore.folder.id}`, {name: folderName.value})
         .then((res)=> {
             spaceStore.replaceFolder(res.data)
         })
-        .then(() => close())
+        .then(() => formsStore.toggleForm())
 }
 </script>
 

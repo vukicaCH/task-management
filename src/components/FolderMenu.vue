@@ -1,8 +1,21 @@
 <script setup>
 import Menu from 'primevue/menu';
 import { EllipsisHorizontalIcon, PlusIcon } from '@heroicons/vue/24/outline'
+import { useFormsStore } from '@/stores/formsStore';
 
-const open = inject('open')
+const {folder} = defineProps({
+    folder:{
+        type: Object,
+        required: true 
+    }   
+})
+
+const formsStore = useFormsStore()
+
+const setForm = (formName) => {
+    formsStore.toggleForm(formName)
+    formsStore.setFormFolder(folder)    
+}
 
 const menu = ref();
 const addMenu = ref();
@@ -13,16 +26,12 @@ const menuItems = ref([
         items: [
             {
                 label: 'Edit',
-                command: () => open('Edit')
+                command: () => setForm('EditFolder')
             },
             {
                 label: 'Delete',
-                command: () => open('Delete')
+                command: () => setForm('DeleteFolder')
             },
-            {
-                label: 'Move',
-                command: () => open('Move')
-            }
         ]
     }
 ]);
@@ -33,7 +42,7 @@ const addMenuItems = ref([
         items: [
             {
                 label: 'List',
-                command: () => open('Create')
+                command: () => setForm('CreateList')
             },
             {
                 label: 'Document',

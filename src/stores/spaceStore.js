@@ -166,6 +166,8 @@ export const useSpaceStore = defineStore('SpaceStore',{
         },
 
         removeFolder(folder){
+            const viewsStore = useViewsStore()
+
             this.folders[folder.space.id] = this.folders[folder.space.id].filter(folderItem => folderItem.id !== folder.id)
 
             delete this.lists.folder[folder.id]
@@ -204,6 +206,8 @@ export const useSpaceStore = defineStore('SpaceStore',{
             const index = this.spaces.findIndex((spaceItem) => spaceItem.id === space.id);
 
             this.spaces[index] = space
+
+            if(this.currentSpace.id === space.id) this.setCurrentSpace(space.id)
 
             return this.hydrateSpaceItems(space.id)
         },
@@ -247,7 +251,10 @@ export const useSpaceStore = defineStore('SpaceStore',{
     },
 
     getters:{
-        getFolders: (state) => state.folders[state.currentSpace.id],
+        getFolders: (state) => {
+
+            return state.folders[state.currentSpace.id]
+        },
 
         getLists(state){
             if(state.currentList) return [state.currentList] 

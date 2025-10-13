@@ -1,8 +1,6 @@
 <script setup>
-import { InputText } from 'primevue';
 import Button from 'primevue/button';
 import { useTasksStore } from '@/stores/tasksStore';
-import axiosIns from '@/axios';
 
 const {top_level_parent, list_id} = defineProps({
     top_level_parent: {
@@ -27,16 +25,12 @@ const taskName = ref('');
 const input = ref();
 
 const createTask = (e) => {
-
     e.preventDefault();
 
-    const data = {name: taskName.value};
-
-    tasksStore.createTask(list_id, data, top_level_parent)
+    tasksStore.createTask(list_id, {name: taskName.value}, top_level_parent)
     
     taskName.value = ''
-    
-    handleCancelClick()
+    input.value.focus()
 }
 
 const handleCancelClick = () => {
@@ -49,7 +43,8 @@ const handleCancelClick = () => {
     <div class="relative w-full h-[50px]">
         <div class="absolute">
             <form v-if="editMode || !top_level_parent" class="flex gap-2" @submit="(e) => createTask(e)">
-                <InputText
+                <input
+                    class="focus:ring-0 focus:outline-none border-b"
                     v-model="taskName"
                     ref="input"
                     @vue:mounted="(input) => input.el.focus()"

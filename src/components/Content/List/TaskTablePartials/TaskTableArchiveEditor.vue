@@ -24,6 +24,11 @@ const archived = ref()
 
 watchEffect(()=> archived.value = taskRef.value.archived)
 
+const toggleEditMode = () => {
+    editMode.value = !editMode.value;
+    tasksStore.listEditMode = !tasksStore.listEditMode;
+}
+
 const options = [
     {label: 'Yes', value: true},
     {label: 'No', value: false}
@@ -37,7 +42,7 @@ onClickOutside(
         }
 
         canEditTask.value = false
-        editMode.value = false
+        toggleEditMode()
     },
     {ignore: [ignoreElSelector]}
 )
@@ -56,7 +61,7 @@ watch(archived, () => canEditTask.value = archived.value != taskRef.value.archiv
         />
     </div>
     <div v-else>
-        <div @click="editMode = true" class="cursor-pointer">
+        <div @click="toggleEditMode" class="cursor-pointer">
             {{ archived ? 'Yes' : 'No' }}
         </div>
     </div>

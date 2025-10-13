@@ -23,6 +23,11 @@ const canEditTask = ref(false);
 
 const priority = ref({})
 
+const toggleEditMode = () => {
+    editMode.value = !editMode.value;
+    tasksStore.listEditMode = !tasksStore.listEditMode;
+}
+
 watchEffect(()=> priority.value = {...taskRef.value.priority})
 
 const options = [
@@ -54,7 +59,7 @@ onClickOutside(
         }
 
         canEditTask.value = false;
-        editMode.value = false
+        toggleEditMode()
     },
     {ignore: [ignoreElSelector]}
 )
@@ -86,7 +91,7 @@ watch(priority, ()=> canEditTask.value = priority.value.id != taskRef.value.prio
     </div>
     <div v-else>
         <div
-            @click="editMode = true"
+            @click="toggleEditMode"
             :style="{
                 backgroundColor: priorityTextAndColor.color,
                 color: priorityTextAndColor.textColor

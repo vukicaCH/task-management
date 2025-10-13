@@ -7,7 +7,7 @@ import { Dialog } from 'primevue';
 import { useSpaceStore } from '@/stores/spaceStore';
 import FolderAddMenu from './FolderAddMenu.vue';
 
-const props = defineProps({
+const {folder} = defineProps({
     folder:{
         type: Object,
         required: true,
@@ -21,13 +21,13 @@ const hovered = ref(false);
 const visible = ref(false)
 const currentForm = ref('')
 
-const lists = computed(() => spaceStore.lists.folder[props.folder.id])
+const lists = computed(() => spaceStore.lists.folder[folder.id])
 
 const toggleFolderOpen = () => open.value = !open.value
 
 const setCurrentFolder = () => {
     open.value = true
-    spaceStore.setCurrentFolder(props.folder, true)
+    spaceStore.setCurrentFolder(folder, true)
 }
 
 const openCurrentForm = (formName) => {
@@ -70,7 +70,7 @@ const header = computed(() => {
                     {{ folder.name }}
                 </div> 
                 <div class="flex gap-1 col-span-2 justify-self-end">
-                    <FolderMenu />
+                    <FolderMenu :folder />
                 </div>
             </div>
             <div class="col-start-2 col-end-9">
@@ -79,7 +79,7 @@ const header = computed(() => {
                         <List v-for="list in lists" :list="list" />
                     </div>
                     <div v-else class="flex items-center hover:bg-gray-700 rounded-lg p-1">
-                        <FolderAddMenu />
+                        <FolderAddMenu :folder />
                     </div>
                 </div>
             </div>

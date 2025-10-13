@@ -20,6 +20,11 @@ const ignoreElSelector = '.ignore'
 const editMode = ref(false)
 const canEditTask = ref(false);
 
+const toggleEditMode = () => {
+    editMode.value = !editMode.value;
+    tasksStore.listEditMode = !tasksStore.listEditMode;
+}
+
 const name = ref()
 
 watchEffect(()=> name.value = taskRef.value.name)
@@ -32,7 +37,7 @@ onClickOutside(
         }
 
         canEditTask.value = false
-        editMode.value = false
+        toggleEditMode()
     },
     {ignore: [ignoreElSelector]}
 )
@@ -44,7 +49,7 @@ watch(name, () => canEditTask.value = name.value != taskRef.value.name)
     <div v-if="editMode" ref="target">
         <InputText v-model="name" />
     </div>
-    <div v-else @click="editMode = true" class="cursor-pointer">
+    <div v-else @click="toggleEditMode" class="cursor-pointer">
         {{ name }}
     </div>
 </template>

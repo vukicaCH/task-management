@@ -1,7 +1,7 @@
 <script setup>
 import Sidebar from './components/Sidebar.vue';
 import Content from './components/Content/Content.vue';
-import Forms from './components/Forms.vue';
+import Forms from './forms/Forms.vue';
 </script>
 
 <template>

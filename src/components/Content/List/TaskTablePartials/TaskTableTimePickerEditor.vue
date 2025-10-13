@@ -34,7 +34,8 @@ const editDate = () => {
         const dateUnix = dayjs(Number(date.value)).valueOf()
         tasksStore.editTask(task, {[field] : dateUnix})
     }
-    
+
+    tasksStore.listEditMode = false;
     canEditTask.value = false;
 }
 
@@ -60,6 +61,7 @@ watch(date, ()=> {
         :placeholder="isReadOnly ? 'Read Only' : 'Select Date...'"
         input-class="max-w-[150px]"
         :disabled="isReadOnly"
+        @focus="tasksStore.listEditMode = true"
         @blur="editDate"
         :pt="{
             panel: 'ignore',
