@@ -15,8 +15,6 @@ const spaceStore = useSpaceStore()
 
 const open = ref(false)
 const hovered = ref(false)
-const visible = ref(false)
-const currentForm = ref('')
 
 const toggleSpaceOpen = () => open.value = !open.value;
 
@@ -24,16 +22,6 @@ const openSpace = () => {
     open.value = true
     spaceStore.setCurrentSpace(space.id, true)
 }
-
-const openCurrentForm = (formName) => {
-    currentForm.value = formName
-    visible.value = true
-}
-
-const closeCurrentForm = () => visible.value = false;
-
-provide('close', closeCurrentForm)
-provide('open', openCurrentForm)
 </script>
 
 <template>
@@ -48,14 +36,14 @@ provide('open', openCurrentForm)
                     <div
                         class="flex items-center justify-center text-white"
                     >
-                        <div v-if="!hovered">{{ space.name.charAt(0) }}</div>
+                        <div v-if="!hovered" class="!font-medium">{{ space.name.charAt(0) }}</div>
                         <button v-else class="!mr-1 w-full h-full flex items-center py-1 justify-center cursor-pointer rounded-lg hover:bg-gray-500">
                             <ChevronRightIcon v-if="!open" class="w-4 h-4"/>
                             <ChevronDownIcon v-else class="w-4 h-4"/>
                         </button>
                     </div>
                 </div>
-                <div @click="openSpace" class="col-span-5">
+                <div @click="openSpace" class="col-span-5 !font-medium">
                     {{ space.name }}
                 </div> 
                 <div class="flex gap-1 col-span-2 justify-self-end">

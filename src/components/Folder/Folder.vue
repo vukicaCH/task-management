@@ -1,9 +1,7 @@
 <script setup>
 import { FolderIcon, ChevronRightIcon, ChevronDownIcon } from '@heroicons/vue/24/solid';
 import FolderMenu from './FolderMenu.vue';
-import List from './List.vue';
-import Form from './Folder/Forms/Form.vue';
-import { Dialog } from 'primevue';
+import List from '../List/List.vue';
 import { useSpaceStore } from '@/stores/spaceStore';
 import FolderAddMenu from './FolderAddMenu.vue';
 
@@ -18,8 +16,6 @@ const spaceStore = useSpaceStore()
 
 const open = ref(false);
 const hovered = ref(false);
-const visible = ref(false)
-const currentForm = ref('')
 
 const lists = computed(() => spaceStore.lists.folder[folder.id])
 
@@ -29,22 +25,6 @@ const setCurrentFolder = () => {
     open.value = true
     spaceStore.setCurrentFolder(folder, true)
 }
-
-const openCurrentForm = (formName) => {
-    currentForm.value = formName
-    visible.value = true
-}
-
-const closeCurrentForm = () => visible.value = false;
-
-provide('close', closeCurrentForm)
-provide('open', openCurrentForm)
-
-const header = computed(() => {
-    if(currentForm.value === 'Create') return 'Create List'
-
-    return `${currentForm.value} Folder`
-})
 </script>
 
 <template>
@@ -66,7 +46,7 @@ const header = computed(() => {
                         </button>
                     </div>
                 </div>
-                <div @click="setCurrentFolder" class="col-span-5">
+                <div @click="setCurrentFolder" class="col-span-5 !font-medium">
                     {{ folder.name }}
                 </div> 
                 <div class="flex gap-1 col-span-2 justify-self-end">
@@ -85,8 +65,4 @@ const header = computed(() => {
             </div>
         </div>
     </div>
-
-    <Dialog v-model:visible="visible" modal :header="header">
-        <Form :current-form="currentForm" :folder="folder" />
-    </Dialog>
 </template>

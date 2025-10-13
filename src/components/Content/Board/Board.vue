@@ -106,17 +106,17 @@ const optimisticallyCompleteTask = (id) => {
 
     <div v-if="loaded" class="flex gap-4">
         <div>
-            To Do Tasks: {{ toDoTasks.length }}
+            <span class="!font-medium">To Do Tasks: {{ toDoTasks.length }}</span>
 
-            <div class="rounded-md !space-y-0.75 p-1 w-[275px] h-[500px] overflow-y-auto bg-gray-700">
+            <div class="rounded-md !space-y-0.75 p-1 w-[275px] h-[600px] overflow-y-auto">
                 <BoardTask v-for="task in toDoTasks" :task="task" :key="task.id" @task-completed="(id) => optimisticallyCompleteTask(id)" />
             </div>
         </div>
 
         <div>
-            Complete Tasks: {{ completeTasks.length }}
+            <span class="!font-medium">Complete Tasks: <span class="text-green-500 !font-bold">{{ completeTasks.length }}</span></span>
 
-            <div class="bg-gray-700 rounded-md !space-y-0.75 p-1 w-[275px] h-[500px] overflow-y-auto">
+            <div class="rounded-md !space-y-0.75 p-1 w-[275px] h-[600px] overflow-y-auto">
                 <BoardTask v-for="task in completeTasks" :task="task" :key="task.id" />
             </div>
         </div>

@@ -69,13 +69,13 @@ const optimisticallyChangeDates = (dates) => {
 </script>
 
 <template>
-    <div class="rounded-md w-full bg-gray-800" ref="boardTaskRef">
+    <div class="rounded-md w-full border-2 border-gray-400" ref="boardTaskRef">
         <div class="flex justify-between relative p-2 !mb-5 text-sm">
             <div>
                 <div v-if="editMode">
                     <InputText @vue:mounted="e => e.el.focus()" @blur="editMode = false" v-model="taskData.name" />
                 </div>
-                <div v-else>{{ taskData.name }}</div>
+                <span class="!font-medium" v-else >{{ taskData.name }}</span>
             </div>
             <div
                 v-if="isHovered && !editMode"

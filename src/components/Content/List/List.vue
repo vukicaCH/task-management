@@ -71,7 +71,7 @@ tasksStore.$onAction(
 </script>
 
 <template>
-    <div class="!space-y-2">
+    <div class="!space-y-2 max-w-[800]px overflow-y-hidden">
         <ColumnChooser />
         <TreePanel v-for="list in spaceStore.getLists" :list />
     </div>

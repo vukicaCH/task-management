@@ -7,7 +7,7 @@ import Forms from './forms/Forms.vue';
 <template>
   <Forms />
 
-  <div class="grid grid-cols-5 gap-8 px-5">
+  <div class="grid grid-cols-5 gap-8 px-5 h-[800px]">
     <Sidebar />
     <Content class="col-span-4" />
   </div>

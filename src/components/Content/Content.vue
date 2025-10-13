@@ -8,7 +8,7 @@ const spaceStore = useSpaceStore();
 
 <template>
     <div v-if="spaceStore.ready">
-        <div v-if="spaceStore.currentSpace" class="border-y-4 border-opacity-0 p-3 ">
+        <div v-if="spaceStore.currentSpace">
             <Breadcrumbs />
             <Tabs />
         </div>

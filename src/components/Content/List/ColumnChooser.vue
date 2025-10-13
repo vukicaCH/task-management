@@ -1,7 +1,7 @@
 <script setup>
 import { Dialog } from 'primevue';
 import ToggleSwitch from 'primevue/toggleswitch';
-import { ViewColumnsIcon } from '@heroicons/vue/24/outline';
+import { ViewColumnsIcon } from '@heroicons/vue/24/solid';
 import { useTasksStore } from '@/stores/tasksStore';
 import { useSpaceStore } from '@/stores/spaceStore';
 
@@ -23,7 +23,7 @@ const columns = computed(() => {
 
     const space = spaceStore.currentSpace;
 
-    if(space.features.tags.enabled) cols.push('tags');
+    if(space.features?.tags?.enabled) cols.push('tags');
     if(space.features.due_dates.enabled) cols.push('due_date');
 
     return cols
@@ -46,7 +46,7 @@ const visible = ref(false)
 </script>
 
 <template>
-    <button @click="visible = true" class="flex gap-1 text-sm rounded-lg border border-gray-500 hover:text-gray-500 p-1 cursor-pointer">
+    <button @click="visible = true" class="flex gap-1 text-sm rounded-lg bg-gray-700 hover:bg-gray-800 !font-medium p-1 cursor-pointer">
         Columns <ViewColumnsIcon class="w-5 h-5" />
     </button>
 

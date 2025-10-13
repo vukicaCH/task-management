@@ -1,8 +1,6 @@
 <script setup>
 import { useSpaceStore } from '@/stores/spaceStore';
-import Space from './Space.vue';
-import Create from '../forms/Space/Create.vue';
-import { Dialog } from 'primevue';
+import Space from './Space/Space.vue';
 import { PlusIcon } from '@heroicons/vue/24/outline'
 import { useFormsStore } from '@/stores/formsStore';
 
@@ -24,7 +22,7 @@ onMounted(() => {
             </button>
         </div>
 
-        <div v-if="!spaceStore.loading" class="border border-white rounded-lg p-2 flex flex-col gap-2">
+        <div v-if="!spaceStore.loading" class="p-2 flex flex-col gap-2">
             <Space v-for="space in spaceStore.spaces" :space="space" />
         </div>
         <div v-else>Loading...</div>

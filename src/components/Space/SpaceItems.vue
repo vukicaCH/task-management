@@ -1,7 +1,7 @@
 <script setup>
 import { useSpaceStore } from '@/stores/spaceStore';
-import Folders from './Folders.vue';
-import Lists from './Lists.vue';
+import Folders from '../Folder/Folders.vue';
+import Lists from '../List/Lists.vue';
 import SpaceAddMenu from './SpaceAddMenu.vue';
 
 const {space} = defineProps({

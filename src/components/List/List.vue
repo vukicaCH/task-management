@@ -27,7 +27,7 @@ const spaceStore = useSpaceStore();
                         <ListBulletIcon class="w-4 h-4"/>
                     </div>
                 </div>
-                <div @click="() => spaceStore.setCurrentList(list)" class="col-span-5">
+                <div @click="() => spaceStore.setCurrentList(list)" class="col-span-5 !font-medium">
                     {{ list.name }}
                 </div> 
                 <div class="flex gap-1 col-span-2 justify-self-end">
