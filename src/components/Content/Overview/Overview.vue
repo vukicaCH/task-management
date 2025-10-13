@@ -9,7 +9,7 @@ const spaceStore = useSpaceStore();
     <div class="grid grid-cols-2 gap-10">
         <div>
             <h1 class="!ml-2 !mb-1 text-xl !font-medium">Folders</h1>
-            <div class="rounded-lg min-h-[300px] p-2 grid grid-cols-2 gap-2">
+            <div class="rounded-lg min-h-[300px] p-2 grid grid-cols-2 auto-rows-min gap-2">
                 <div v-for="folder in spaceStore.getFolders" @click="() => spaceStore.setCurrentFolder(folder, true)" class="rounded-sm border-2 border-gray-600 text-gray-400 hover:text-gray-200 hover:border-gray-200 cursor-pointer flex items-center pl-2 place-self-start w-full py-2">
                     <span class="flex gap-2 items-center !font-medium"><FolderIcon class="w-5 h-5" /> {{ folder.name }}</span>
                 </div>
@@ -17,7 +17,7 @@ const spaceStore = useSpaceStore();
         </div>
         <div>
             <h1 class="!ml-2 !mb-1 text-xl !font-medium">Lists</h1>
-            <div class="rounded-lg min-h-[300px] p-2 grid grid-cols-2 gap-2">
+            <div class="rounded-lg min-h-[300px] p-2 grid grid-cols-2 auto-rows-min gap-2">
                 <div v-for="list in spaceStore.getFolderlessLists" @click="() => spaceStore.setCurrentList(list)" class="rounded-sm border-2 border-gray-600 text-gray-400 hover:text-gray-200 hover:border-gray-200 cursor-pointer flex items-center pl-2 place-self-start w-full py-2">
                     <span class="flex gap-2 items-center !font-medium"><ListBulletIcon class="w-5 h-5" /> {{ list.name }}</span>
                 </div>

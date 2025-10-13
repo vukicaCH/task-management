@@ -1,4 +1,5 @@
 <script setup>
+import ContentSkeleton from '../skeletons/ContentSkeleton.vue';
 import Breadcrumbs from './Breadcrumbs.vue';
 import Tabs from './Tabs.vue';
 import { useSpaceStore } from '@/stores/spaceStore';
@@ -14,5 +15,5 @@ const spaceStore = useSpaceStore();
         </div>
         <div v-else>Select space, folder or list to see content.</div>
     </div>
-    <div v-else>Loading...</div>
+    <ContentSkeleton v-else />
 </template>

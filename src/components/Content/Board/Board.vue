@@ -3,6 +3,7 @@ import { useSpaceStore } from '@/stores/spaceStore';
 import { useTasksStore } from '@/stores/tasksStore';
 import { useViewsStore } from '@/stores/viewsStore';
 import BoardTask from './BoardTask.vue';
+import BoardSkeleton from '@/components/skeletons/BoardSkeleton.vue';
 
 const spaceStore = useSpaceStore();
 const tasksStore = useTasksStore();
@@ -121,5 +122,5 @@ const optimisticallyCompleteTask = (id) => {
             </div>
         </div>
     </div>
-    <div v-else>Loading...</div>
+    <BoardSkeleton v-else />
 </template>
