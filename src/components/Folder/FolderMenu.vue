@@ -46,7 +46,7 @@ const addMenuItems = ref([
             },
             {
                 label: 'Document',
-                command: () => {}
+                command: () => setForm('CreateDocument')
             }
         ]
     }

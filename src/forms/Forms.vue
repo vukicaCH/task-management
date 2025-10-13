@@ -10,6 +10,7 @@ import DeleteFolder from './Folder/Delete.vue';
 import CreateList from './List/Create.vue';
 import EditList from './List/Edit.vue';
 import DeleteList from './List/Delete.vue';
+import CreateDocument from './Document/Create.vue';
 
 const formsStore = useFormsStore()
 
@@ -22,7 +23,8 @@ const forms = {
     DeleteFolder,
     CreateList,
     EditList,
-    DeleteList
+    DeleteList,
+    CreateDocument
 }
 
 const formsHeader = (formName) => formName?.replace(/([A-Z])/g, ' $1')
@@ -30,7 +32,12 @@ const formsHeader = (formName) => formName?.replace(/([A-Z])/g, ' $1')
 </script>
 
 <template>
-    <Dialog v-model:visible="formsStore.formVisible" modal :header="formsHeader(formsStore.currentForm)">
+    <Dialog
+        v-model:visible="formsStore.formVisible"
+        modal
+        :header="formsHeader(formsStore.currentForm)"
+        class="w-[300px]"
+    >
         <component :is="forms[formsStore.currentForm]" />
     </Dialog>
 </template>

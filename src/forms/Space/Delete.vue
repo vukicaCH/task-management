@@ -27,8 +27,13 @@ const deleteSpace = (e) => {
                 Are you sure you want to delete this space (<span class="!font-medium">{{formsStore.space.name.toUpperCase() }})</span>?
             </p>
 
-            <div>
-                <button type="submit">Confirm</button>
+            <div class="flex justify-end !mt-2">
+                <button
+                    type="submit"
+                    class="bg-gray-600 text-white px-5 py-2 rounded-md !font-medium border border-gray-600 hover:text-gray-300 cursor-pointer"
+                >
+                    Confirm
+                </button>
             </div>
         </form>
     </div>
