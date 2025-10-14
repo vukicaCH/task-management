@@ -166,8 +166,6 @@ export const useSpaceStore = defineStore('SpaceStore',{
         },
 
         removeFolder(folder){
-            const viewsStore = useViewsStore()
-
             this.folders[folder.space.id] = this.folders[folder.space.id].filter(folderItem => folderItem.id !== folder.id)
 
             delete this.lists.folder[folder.id]

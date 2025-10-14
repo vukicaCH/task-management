@@ -89,36 +89,6 @@ export const useTasksStore = defineStore('TasksStore',{
                 })
         },
 
-        // toggleTaskLink(to,from, linked){
-        //     const method = linked ? 'delete' : 'post'
-
-        //     axios({url: `task/${from}/link/${to}`, method})
-        //     .then(res => {
-
-        //         const fromTask = res.data.task;
-        //         const toTask = this.tasks.team.find(task => task.id === to) 
-
-        //         const {list, id} = fromTask;
-
-        //         this.tasks.list[list.id] = this
-        //                                 .tasks[list.id]
-        //                                 .map(task => task.id === id ? fromTask : task)                   
-
-        //         if(toTask.list.id in this.tasks.list && this.tasks.list[toTask.list.id].length){
-        //             axios
-        //                 .get(`task/${to}`)
-        //                 .then(res => {
-
-        //                     const newTask = res.data
-
-        //                     this.tasks.list[toTask.list.id] = this
-        //                                                     .tasks[toTask.list.id]
-        //                                                     .map(task => task.id === to ? newTask : task)
-        //                 })
-        //         }
-        //     })
-        // },
-
         attachTag(taskId, tag){
             axios.post(`task/${taskId}/tag/${tag.name}`)
         },
