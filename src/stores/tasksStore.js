@@ -39,8 +39,8 @@ export const useTasksStore = defineStore('TasksStore',{
                 .finally(() => this.loading = false)
         },
 
-        createTask(listId, taskData, taskParentId = null){
-            axios
+        async createTask(listId, taskData, taskParentId = null){
+            return axios
                 .post(`list/${listId}/task`, {...taskData, parent: taskParentId})
                 .then(res => {
                     const viewsStore = useViewsStore()

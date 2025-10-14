@@ -24,10 +24,16 @@ const taskName = ref('');
 
 const input = ref();
 
+const loading = ref(false)
+
 const createTask = (e) => {
     e.preventDefault();
 
-    tasksStore.createTask(list_id, {name: taskName.value}, top_level_parent)
+    loading.value = true;
+
+    tasksStore
+        .createTask(list_id, {name: taskName.value}, top_level_parent)
+        .then(() => loading.value = false)
     
     taskName.value = ''
     input.value.focus()
@@ -49,17 +55,27 @@ const handleCancelClick = () => {
                     ref="input"
                     @vue:mounted="(input) => input.el.focus()"
                     placeholder="Task Name"
+                    :disabled="loading"
                 />
-                <Button severity="secondary" label="Cancel" @click="handleCancelClick" />
-                <Button severity="contrast" label="Submit" type="submit" />
+                <Button
+                    severity="secondary"
+                    label="Cancel"
+                    @click="handleCancelClick"
+                    :disabled="loading"
+                />
+                <Button
+                    severity="contrast"
+                    :label="loading ? '...' : 'Submit'"
+                    :disabled="loading"
+                    type="submit"
+                />
             </form>
             <div v-else>
                 <Button
                     severity="secondary"
                     outlined
-                    @click="editMode = true"
                 >
-                    + Add Task
+                    Add Task
                 </Button>
             </div>
         </div>
