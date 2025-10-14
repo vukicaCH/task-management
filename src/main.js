@@ -1,4 +1,3 @@
-import './assets/main.css'
 import PrimeVue from 'primevue/config'
 import Lara from '@primeuix/themes/lara';
 import { createApp } from 'vue'
