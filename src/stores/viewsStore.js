@@ -1,4 +1,4 @@
-import axiosIns from "@/axios";
+import axios from "@/axios";
 import { useSpaceStore } from "./spaceStore";
 
 export const useViewsStore = defineStore('ViewsStore',() => {
@@ -18,13 +18,10 @@ export const useViewsStore = defineStore('ViewsStore',() => {
 
         if(views[parent][parentId]) return
 
-        await axiosIns
+        await axios
             .get(`${parent}/${parentId}/view`)
             .then(async res => {
-
-                console.log(res)
-
-                const view = res.data.views[0];
+                const view = res.data.views.find(view => view.type === 'board');
 
                 if(view){
                     views[parent][parentId] = view;
@@ -42,8 +39,8 @@ export const useViewsStore = defineStore('ViewsStore',() => {
             settings : {show_subtasks : 2, show_closed_subtasks: true}
         }       
 
-        await axiosIns
-            .post(`${parent}/${parentId}/view`,data)
+        await axios
+            .post(`${parent}/${parentId}/view`, data)
             .then((res) => views[parent][parentId] = res.data.view)
     }
 

@@ -13,9 +13,12 @@ export const useFormsStore = defineStore('FormsStore',{
         toggleForm(currentForm = null){
             this.currentForm = currentForm;
             this.formVisible = !this.formVisible
-            this.space = null;
-            this.folder = null;
-            this.list = null;
+
+            if(!currentForm){
+                this.space = null;
+                this.folder = null;
+                this.list = null;
+            }
         },
 
         setFormSpace(space){

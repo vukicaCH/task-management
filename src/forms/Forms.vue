@@ -11,6 +11,7 @@ import CreateList from './List/Create.vue';
 import EditList from './List/Edit.vue';
 import DeleteList from './List/Delete.vue';
 import CreateDocument from './Document/Create.vue';
+import ComingUpNext from './ComingUpNext.vue';
 
 const formsStore = useFormsStore()
 
@@ -24,7 +25,8 @@ const forms = {
     CreateList,
     EditList,
     DeleteList,
-    CreateDocument
+    CreateDocument,
+    ComingUpNext
 }
 
 const formsHeader = (formName) => formName?.replace(/([A-Z])/g, ' $1')

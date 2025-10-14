@@ -1,5 +1,5 @@
 <script setup>
-import axiosIns from '@/axios'
+import axios from '@/axios'
 import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 
@@ -9,7 +9,7 @@ const formsStore = useFormsStore()
 const deleteList = (e) => {
     e.preventDefault()
 
-    axiosIns
+    axios
         .delete(`list/${formsStore.list.id}`)
         .then(()=> {
             if(!formsStore.list.folder.hidden){

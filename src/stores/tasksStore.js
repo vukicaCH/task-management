@@ -1,4 +1,4 @@
-import axiosIns from "@/axios";
+import axios from "@/axios";
 import _ from "lodash";
 import { useFormsStore } from "./formsStore";
 import { useViewsStore } from "./viewsStore";
@@ -32,7 +32,7 @@ export const useTasksStore = defineStore('TasksStore',{
 
             if(parentType === 'list') this.listId = parent.id
 
-            axiosIns
+            axios
                 .get(`view/${id}/task`)
                 .then(res => {
 
@@ -44,7 +44,7 @@ export const useTasksStore = defineStore('TasksStore',{
         },
 
         createTask(listId, taskData, taskParentId = null){
-            axiosIns
+            axios
                 .post(`list/${listId}/task`, {...taskData, parent: taskParentId})
                 .then(res => {
                     const viewsStore = useViewsStore()
@@ -74,7 +74,7 @@ export const useTasksStore = defineStore('TasksStore',{
         },
 
         getAllTasks(){
-            axiosIns.get(`/team/90151303803/task?include_closed=true&subtasks=true`).then(res => {
+            axios.get(`/team/90151303803/task?include_closed=true&subtasks=true`).then(res => {
                 this.tasks.team = res.data.tasks
             })
         },
@@ -85,7 +85,7 @@ export const useTasksStore = defineStore('TasksStore',{
 
             console.log(task)
 
-            axiosIns
+            axios
                 .put(`/task/${task.id}`, payload)
                 .finally(()=> {
                     this.loading = false;
@@ -96,7 +96,7 @@ export const useTasksStore = defineStore('TasksStore',{
         toggleTaskLink(to,from, linked){
             const method = linked ? 'delete' : 'post'
 
-            axiosIns({url: `task/${from}/link/${to}`, method})
+            axios({url: `task/${from}/link/${to}`, method})
             .then(res => {
 
                 const fromTask = res.data.task;
@@ -109,7 +109,7 @@ export const useTasksStore = defineStore('TasksStore',{
                                         .map(task => task.id === id ? fromTask : task)                   
 
                 if(toTask.list.id in this.tasks.list && this.tasks.list[toTask.list.id].length){
-                    axiosIns
+                    axios
                         .get(`task/${to}`)
                         .then(res => {
 
@@ -124,11 +124,11 @@ export const useTasksStore = defineStore('TasksStore',{
         },
 
         attachTag(taskId, tag){
-            axiosIns.post(`task/${taskId}/tag/${tag.name}`)
+            axios.post(`task/${taskId}/tag/${tag.name}`)
         },
 
         removeTag(taskId, tag){
-            axiosIns.delete(`task/${taskId}/tag/${tag.name}`)
+            axios.delete(`task/${taskId}/tag/${tag.name}`)
         }
     }
 })

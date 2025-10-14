@@ -18,7 +18,6 @@ const props = defineProps({
 
 const tasksStore = useTasksStore();
 const formsStore = useFormsStore();
-const viewsStore = useViewsStore();
 
 const isNewTasksFormOpen = ref(false)
 

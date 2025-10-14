@@ -1,5 +1,5 @@
 <script setup>
-import axiosIns from '@/axios'
+import axios from '@/axios'
 import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 import { InputText } from 'primevue';
@@ -12,7 +12,7 @@ const folderName = ref(formsStore.folder.name)
 const editFolder = (e) => {
     e.preventDefault()
 
-    axiosIns
+    axios
         .put(`folder/${formsStore.folder.id}`, {name: folderName.value})
         .then((res)=> {
             spaceStore.replaceFolder(res.data)

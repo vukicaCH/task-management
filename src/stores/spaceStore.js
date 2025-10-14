@@ -1,4 +1,4 @@
-import axiosIns from "@/axios";
+import axios from "@/axios";
 import { useViewsStore } from "./viewsStore";
 
 export const useSpaceStore = defineStore('SpaceStore',{
@@ -27,7 +27,7 @@ export const useSpaceStore = defineStore('SpaceStore',{
 
             this.loading = true;
 
-            return axiosIns
+            return axios
                         .get('team/90151303803/space')
                         .then(res => this.spaces = res.data.spaces)
                         .then(() => {
@@ -40,7 +40,7 @@ export const useSpaceStore = defineStore('SpaceStore',{
         },
 
         async hydrateFolders(spaceId){
-            return axiosIns
+            return axios
                     .get(`space/${spaceId}/folder`)
                     .then(res => {
                         this.folders[spaceId] = res.data.folders;
@@ -59,13 +59,13 @@ export const useSpaceStore = defineStore('SpaceStore',{
         },
 
         async hydrateLists(spaceId){
-            return axiosIns
+            return axios
                         .get(`space/${spaceId}/list`)
                         .then(res => this.lists.space[spaceId] = res.data.lists)
         },
 
         async hydrateFolderLists(folderId){
-            return axiosIns
+            return axios
                         .get(`folder/${folderId}/list`)
                         .then(res => {
                             this.lists.folder[folderId] = res.data.lists
@@ -214,11 +214,11 @@ export const useSpaceStore = defineStore('SpaceStore',{
 
         getSpaceView(){
 
-            axiosIns
+            axios
                 .get(`${this.currentType}/${this.currentTypeId}/view`)
                 .then((res) => {
 
-                    res.data.views.forEach(async view => await axiosIns.delete(`view/${view.id}`))
+                    res.data.views.forEach(async view => await axios.delete(`view/${view.id}`))
 
                     // const boardView = res.data.views.find(view => view.type === 'board')
 
@@ -231,20 +231,20 @@ export const useSpaceStore = defineStore('SpaceStore',{
         },
 
         createSpaceView(spaceId){
-            axiosIns
+            axios
                 .post(`space/${spaceId}/view`,{type: 'board', filters:{show_closed: true}})
                 .then(res => this.views.space[spaceId] = res.data.view)
         },
 
         hydrateSpaceTags(spaceId){
-            axiosIns
+            axios
                 .get(`space/${spaceId}/tag`)
                 .then(res => this.tags[spaceId] = res.data.tags)
         },
 
         deleteSpaceTag(spaceId, tagName){
 
-            axiosIns
+            axios
                 .delete(`space/${spaceId}/tag/${tagName}`)
                 .then(() => this.tags[spaceId] = this.tags[spaceId].filter(tag => tag.name !== tagName))
         }

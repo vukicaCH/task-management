@@ -1,6 +1,6 @@
 <script setup>
 import { InputText } from 'primevue';
-import axiosIns from '@/axios'
+import axios from '@/axios'
 import { useFormsStore } from '@/stores/formsStore';
 import { useSpaceStore } from '@/stores/spaceStore';
 
@@ -12,7 +12,7 @@ const folderName = ref('')
 const createFolder = (e) => {
     e.preventDefault()
 
-    axiosIns
+    axios
         .post(`space/${formsStore.space.id}/folder`, {name: folderName.value})
         .then((res)=>{
             spaceStore.addFolder(res.data)

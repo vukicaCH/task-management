@@ -1,6 +1,6 @@
 <script setup>
 import { InputText } from 'primevue';
-import axiosIns from '@/axios'
+import axios from '@/axios'
 import { useSpaceStore } from '@/stores/spaceStore';
 import { useFormsStore } from '@/stores/formsStore';
 
@@ -12,7 +12,7 @@ const spaceName = ref('')
 const createSpace = (e) => {
     e.preventDefault()
 
-    axiosIns
+    axios
         .post('/team/90151303803/space', {name: spaceName.value})
         .then((res)=>{
             spaceStore.addSpace(res.data)

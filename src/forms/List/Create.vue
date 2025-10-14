@@ -1,5 +1,5 @@
 <script setup>
-import axiosIns from '@/axios'
+import axios from '@/axios'
 import { useFormsStore } from '@/stores/formsStore';
 import { useSpaceStore } from '@/stores/spaceStore';
 import Select from 'primevue/select';
@@ -19,14 +19,14 @@ const options = computed(
 const createList = async (e) => {
     e.preventDefault()
 
-    if(formsStore.space){
-        await axiosIns
+    if(!formsStore.folder){
+        await axios
         .post(`space/${formsStore.space.id}/list`, {name: listName.value})
         .then((res) => {
             spaceStore.addListToSpace(res.data)
         })
     }else{
-        await axiosIns
+        await axios
         .post(`folder/${selectedFolderId.value}/list`, {name: listName.value})
         .then((res) => {
             spaceStore.addListToFolder(res.data)

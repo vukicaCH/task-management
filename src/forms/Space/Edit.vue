@@ -1,5 +1,5 @@
 <script setup>
-import axiosIns from '@/axios'
+import axios from '@/axios'
 import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 import { InputText } from 'primevue';
@@ -11,7 +11,7 @@ const spaceName = ref(formsStore.space.name)
 const editSpace = (e) => {
     e.preventDefault()
 
-    axiosIns
+    axios
         .put(`/space/${formsStore.space.id}`, {name: spaceName.value})
         .then(res => spaceStore.replaceSpace(res.data))
         .then(() => formsStore.toggleForm())

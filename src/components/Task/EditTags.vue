@@ -4,7 +4,7 @@ import { useSpaceStore } from '@/stores/spaceStore';
 import Tag from '../Tags/Tag.vue';
 import Popover from 'primevue/popover';
 import TagEditor from '../Tags/TagEditor.vue';
-import axiosIns from '@/axios';
+import axios from '@/axios';
 import _ from 'lodash';
 import InputText from 'primevue/inputtext';
 import { EllipsisHorizontalIcon } from '@heroicons/vue/24/outline';
@@ -70,7 +70,7 @@ const createSpaceTag = () => {
 
     const tagToBeCreated = {name: searchQuery.value, tag_bg: color, tag_fg: color}
 
-    axiosIns
+    axios
         .post(`space/${spaceId}/tag`, {tag: tagToBeCreated})
         .then(() => spaceStore.hydrateSpaceTags(spaceId))
         .then(() => tasksStore.attachTag(formsStore.task.id, tagToBeCreated))
@@ -89,7 +89,7 @@ const editSpaceTag = (data) => {
     const spaceId = spaceStore.currentSpace.id;
     const params = JSON.stringify({tag: data})
     
-    axiosIns
+    axios
         .put(`space/${spaceId}/tag/${tagName}`, params)
         .then(() => spaceStore.hydrateSpaceTags(spaceId))
 }

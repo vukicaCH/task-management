@@ -1,5 +1,5 @@
 <script setup>
-import axiosIns from '@/axios'
+import axios from '@/axios'
 import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 
@@ -10,7 +10,7 @@ const spaceStore = useSpaceStore()
 const deleteSpace = (e) => {
     e.preventDefault()
 
-    axiosIns
+    axios
         .delete(`/space/${formsStore.space.id}`)
         .then(()=>{
             spaceStore.removeSpace(formsStore.space.id)

@@ -1,9 +1,10 @@
 <script setup>
 import { useSpaceStore } from '@/stores/spaceStore';
-import ColumnChooser from './ColumnChooser.vue';
-import TreePanel from './TreePanel.vue';
 import { useTasksStore } from '@/stores/tasksStore';
 import { useViewsStore } from '@/stores/viewsStore';
+import ListCreateButton from './ListCreateButton.vue';
+import ColumnChooser from './ColumnChooser.vue';
+import TreePanel from './TreePanel.vue';
 
 const spaceStore = useSpaceStore()
 const tasksStore = useTasksStore()
@@ -68,11 +69,15 @@ tasksStore.$onAction(
     }
   }
 )
+
+
 </script>
 
 <template>
-    <div class="!space-y-2 max-w-[800]px overflow-y-hidden">
+    <div v-if="spaceStore.getLists.length" class="!space-y-2 max-w-[800]px overflow-y-hidden">
         <ColumnChooser />
         <TreePanel v-for="list in spaceStore.getLists" :list />
     </div>
+
+    <ListCreateButton v-else />
 </template>

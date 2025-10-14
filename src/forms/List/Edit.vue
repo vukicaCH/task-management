@@ -1,5 +1,5 @@
 <script setup>
-import axiosIns from '@/axios'
+import axios from '@/axios'
 import { useFormsStore } from '@/stores/formsStore'
 import { useSpaceStore } from '@/stores/spaceStore'
 import { InputText } from 'primevue';
@@ -12,7 +12,7 @@ const listName = ref(formsStore.list.name)
 const editList = (e) => {
     e.preventDefault()
 
-    axiosIns
+    axios
         .put(`list/${formsStore.list.id}`, {name: listName.value})
         .then(async (res) => {
             const {space, folder} = res.data;
