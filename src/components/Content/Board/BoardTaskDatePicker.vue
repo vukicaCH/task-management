@@ -24,8 +24,8 @@ const toggle = (event) => {
     op.value.toggle(event);
 }
 
-const startDate = ref(props.task.start_date);
-const dueDate = ref(props.task.due_date);
+const startDate = ref();
+const dueDate = ref();
 
 const canEdit = ref(false);
 
@@ -52,6 +52,11 @@ const setDates = () => {
     tasksStore.editTask(props.task, {start_date, due_date})
 }
 
+onMounted(() => {
+    startDate.value = props.task.start_date ? new Date(Number(props.task.start_date)) : null;
+    dueDate.value = props.task.due_date ? new Date(Number(props.task.due_date)) : null;
+})
+
 const getFormattedDate = (date) => dayjs(Number(date)).format('DD/MM/YYYY')
 
 const toolTipText = computed(() => {
@@ -77,11 +82,12 @@ const toolTipText = computed(() => {
                 <span class="text-xs !font-medium">Start Date</span>
                 <DatePicker
                     v-model="startDate"
+                    dateFormat="dd/mm/yy"
                     placeholder="Select Start Date..."
                     show-button-bar
                     :pt="{
                         root(obj){
-                            obj.state.d_value = startDate ? getFormattedDate(startDate) : null
+                            obj.state.d_value = startDate ? startDate : null
                         }
                     }"
                 />
@@ -90,11 +96,12 @@ const toolTipText = computed(() => {
                 <span class="text-xs !font-medium">Due Date</span>
                 <DatePicker
                     v-model="dueDate"
+                    dateFormat="dd/mm/yy"
                     placeholder="Select Due Date..."
                     show-button-bar
                     :pt="{
                         root(obj){
-                            obj.state.d_value = dueDate ? getFormattedDate(dueDate) : null
+                            obj.state.d_value = dueDate ? dueDate : null
                         }
                     }"    
                 />

@@ -39,7 +39,7 @@ const editDate = () => {
     canEditTask.value = false;
 }
 
-watchEffect(()=> date.value = taskRef.value[field])
+watchEffect(()=> date.value = taskRef.value[field] ? getFormattedDate(taskRef.value[field]) : null)
 
 watch(date, ()=> {
     const selectedDate = getFormattedDate(date.value)
@@ -66,13 +66,13 @@ watch(date, ()=> {
         :pt="{
             panel: 'ignore',
             root(obj){
-                obj.state.d_value = date ? getFormattedDate(date) : null
+                obj.state.d_value = date ? date : null
             }
         }"
     />
     <div v-else v-tooltip="`Read Only`" class="cursor-not-allowed flex items-center gap-1 text-gray-400">
         <div>
-            <div v-if="date">{{ getFormattedDate(date) }}</div>
+            <div v-if="date">{{ date }}</div>
             <div v-else>No Date</div>
         </div>
         <LockClosedIcon class="w-5 h-5" />

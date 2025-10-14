@@ -30,12 +30,7 @@ export const useTasksStore = defineStore('TasksStore',{
 
             axios
                 .get(`view/${id}/task`)
-                .then(res => {
-
-                    console.log(`done for ${parentType} ${parentTypeId}`)
-
-                    this.tasks[parentType][parentTypeId] = res.data.tasks
-                })
+                .then(res => this.tasks[parentType][parentTypeId] = res.data.tasks)
                 .finally(() => this.loading = false)
         },
 
