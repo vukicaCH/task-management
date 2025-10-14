@@ -16,13 +16,13 @@ const view = computed(() => {
     return viewsStore.views[spaceStore.currentType][spaceStore.currentTypeId]
 })
 
-const loaded = computed(() => spaceStore.currentTypeId in tasksStore.boardTasks[spaceStore.currentType])
+const loaded = computed(() => spaceStore.currentTypeId in tasksStore.tasks[spaceStore.currentType])
 
 watchEffect(() => {
     const id = spaceStore.currentTypeId
     const type = spaceStore.currentType
 
-    let tasksProp = tasksStore.boardTasks[type];
+    let tasksProp = tasksStore.tasks[type];
 
     if(id in tasksProp){
 
@@ -37,7 +37,7 @@ watchEffect(() => {
         toDoTasks.value = toDo;
         completeTasks.value = complete;
     }else if(view.value){
-        tasksStore.hydrateBoardTasks(view.value)
+        tasksStore.hydrateTasks(view.value)
     }
 })
 
@@ -55,7 +55,7 @@ tasksStore.$onAction(
         let editedTask = args[0];
 
         if(editedTask.parent){
-            editedTask = tasksStore.boardTasks[spaceStore.currentType][spaceStore.currentTypeId].find(task => task.id === editedTask.parent)
+            editedTask = tasksStore.tasks[spaceStore.currentType][spaceStore.currentTypeId].find(task => task.id === editedTask.parent)
         }
 
         tasksToUpdate.value.push(editedTask);
@@ -63,7 +63,7 @@ tasksStore.$onAction(
         if(updateTimeout) clearTimeout(updateTimeout)
 
         updateTimeout = setTimeout(() => {
-            const boardTasksToUpdate = {
+            const listsToUpdate = {
                 space: [],
                 folder: [],
                 list: []
@@ -73,18 +73,18 @@ tasksStore.$onAction(
 
                 const {list, folder, space} = task;
 
-                if(list.id in tasksStore.boardTasks.list && !boardTasksToUpdate.list.includes(list.id)) boardTasksToUpdate.list.push(list.id);
-                if(folder.id in tasksStore.boardTasks.folder && !boardTasksToUpdate.folder.includes(folder.id)) boardTasksToUpdate.folder.push(folder.id);
-                if(space.id in tasksStore.boardTasks.space && !boardTasksToUpdate.space.includes(space.id)) boardTasksToUpdate.space.push(space.id);
+                if(list.id in tasksStore.tasks.list && !listsToUpdate.list.includes(list.id)) listsToUpdate.list.push(list.id);
+                if(folder.id in tasksStore.tasks.folder && !listsToUpdate.folder.includes(folder.id)) listsToUpdate.folder.push(folder.id);
+                if(space.id in tasksStore.tasks.space && !listsToUpdate.space.includes(space.id)) listsToUpdate.space.push(space.id);
             })
 
             let callbacks = []
 
-            Object.entries(boardTasksToUpdate).forEach(([boardType, boardTypeIds]) => {
+            Object.entries(listsToUpdate).forEach(([boardType, boardTypeIds]) => {
                 boardTypeIds.map(boardTypeId => {
                     const view = viewsStore.views[boardType][boardTypeId]
 
-                    callbacks.push(() => tasksStore.hydrateBoardTasks(view))
+                    callbacks.push(() => tasksStore.hydrateTasks(view))
                 })
             })
 
@@ -99,7 +99,7 @@ const optimisticallyCompleteTask = (id) => {
     const taskToBeMoved = toDoTasks.value.find(task => task.id === id);
 
     toDoTasks.value = toDoTasks.value.filter(task => task.id !== taskToBeMoved.id);
-    completeTasks.value = [taskToBeMoved, ...completeTasks.value]
+    completeTasks.value = [...completeTasks.value, taskToBeMoved]
 }
 </script>
 

@@ -212,30 +212,6 @@ export const useSpaceStore = defineStore('SpaceStore',{
             return this.hydrateSpaceItems(space.id)
         },
 
-        getSpaceView(){
-
-            axios
-                .get(`${this.currentType}/${this.currentTypeId}/view`)
-                .then((res) => {
-
-                    res.data.views.forEach(async view => await axios.delete(`view/${view.id}`))
-
-                    // const boardView = res.data.views.find(view => view.type === 'board')
-
-                    // if(boardView){
-                    //     this.views.space[spaceId] = boardView
-                    // }else{
-                    //     this.createSpaceView(spaceId)
-                    // }
-                })
-        },
-
-        createSpaceView(spaceId){
-            axios
-                .post(`space/${spaceId}/view`,{type: 'board', filters:{show_closed: true}})
-                .then(res => this.views.space[spaceId] = res.data.view)
-        },
-
         hydrateSpaceTags(spaceId){
             axios
                 .get(`space/${spaceId}/tag`)

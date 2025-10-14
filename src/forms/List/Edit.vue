@@ -17,8 +17,6 @@ const editList = (e) => {
         .then(async (res) => {
             const {space, folder} = res.data;
 
-            spaceStore.currentList = res.data
-
             if(folder.hidden){
                 return spaceStore.hydrateLists(space.id)
             }else{

@@ -26,7 +26,7 @@ watch(() => tasksStore.listEditMode, (newVal) => {
         if(updateTimeout) clearTimeout(updateTimeout)
 
         updateTimeout = setTimeout(()=> {
-            const boardTasksToUpdate = {
+            const listsToUpdate = {
                 space: [],
                 folder: [],
                 list: []
@@ -36,18 +36,18 @@ watch(() => tasksStore.listEditMode, (newVal) => {
 
                 const {list, folder, space} = task;
 
-                if(list.id in tasksStore.boardTasks.list && !boardTasksToUpdate.list.includes(list.id)) boardTasksToUpdate.list.push(list.id);
-                if(folder.id in tasksStore.boardTasks.folder && !boardTasksToUpdate.folder.includes(folder.id)) boardTasksToUpdate.folder.push(folder.id);
-                if(space.id in tasksStore.boardTasks.space && !boardTasksToUpdate.space.includes(space.id)) boardTasksToUpdate.space.push(space.id);
+                if(list.id in tasksStore.tasks.list && !listsToUpdate.list.includes(list.id)) listsToUpdate.list.push(list.id);
+                if(folder.id in tasksStore.tasks.folder && !listsToUpdate.folder.includes(folder.id)) listsToUpdate.folder.push(folder.id);
+                if(space.id in tasksStore.tasks.space && !listsToUpdate.space.includes(space.id)) listsToUpdate.space.push(space.id);
             })
 
             let callbacks = []
 
-            Object.entries(boardTasksToUpdate).forEach(([boardType, boardTypeIds]) => {
+            Object.entries(listsToUpdate).forEach(([boardType, boardTypeIds]) => {
                 boardTypeIds.map(boardTypeId => {
                     const view = viewsStore.views[boardType][boardTypeId]
 
-                    callbacks.push(() => tasksStore.hydrateBoardTasks(view))
+                    callbacks.push(() => tasksStore.hydrateTasks(view))
                 })
             })
 
@@ -69,7 +69,6 @@ tasksStore.$onAction(
     }
   }
 )
-
 
 </script>
 

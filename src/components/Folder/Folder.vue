@@ -29,9 +29,9 @@ const setCurrentFolder = () => {
 
 <template>
     <div>
-        <div class="grid grid-cols-8">
+        <div class="grid grid-cols-8 !mt-1">
             <div
-                class="grid grid-cols-8 col-span-8 row-span-1 cursor-pointer items-center relative hover:bg-gray-700 rounded-lg p-1"
+                class="grid grid-cols-8 col-span-8 row-span-1 cursor-pointer items-center relative bg-gray-700 rounded-lg p-1"
                 @mouseover="hovered=true"
                 @mouseleave="hovered=false"
             >

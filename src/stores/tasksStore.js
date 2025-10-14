@@ -1,29 +1,25 @@
 import axios from "@/axios";
 import _ from "lodash";
-import { useFormsStore } from "./formsStore";
 import { useViewsStore } from "./viewsStore";
 
 export const useTasksStore = defineStore('TasksStore',{
     state: ()=> ({
-        tasks:{
-            list: {},
-            team: []
-        },
         loading: false,
         listId: null,
-        columns: ['status'],
+        columns: ['status', 'due_date', 'date_created', 'priority'],
         readOnlyFields: ['date_done','date_updated','date_closed','date_created','creator'],
         allTasks:[],
-        boardTasks:{
+        tasks:{
             space: {},
             folder: {},
             list: {},
+            team: []
         },
         listEditMode: false
     }),
 
     actions:{
-        hydrateBoardTasks(view){
+        hydrateTasks(view){
             this.loading = true;
             const {parent, id} = view
 
@@ -38,7 +34,7 @@ export const useTasksStore = defineStore('TasksStore',{
 
                     console.log(`done for ${parentType} ${parentTypeId}`)
 
-                    this.boardTasks[parentType][parentTypeId] = res.data.tasks
+                    this.tasks[parentType][parentTypeId] = res.data.tasks
                 })
                 .finally(() => this.loading = false)
         },
@@ -51,22 +47,22 @@ export const useTasksStore = defineStore('TasksStore',{
 
                     const {list, folder, space} = res.data;
 
-                    if(list.id in this.boardTasks.list){
+                    if(list.id in this.tasks.list){
                         const view = viewsStore.views.list[list.id];
 
-                        this.hydrateBoardTasks(view)
+                        this.hydrateTasks(view)
                     }
 
-                    if(folder.id in this.boardTasks.folder){
+                    if(folder.id in this.tasks.folder){
                         const view = viewsStore.views.folder[folder.id];
 
-                        this.hydrateBoardTasks(view)
+                        this.hydrateTasks(view)
                     }
 
-                    if(space.id in this.boardTasks.space){
+                    if(space.id in this.tasks.space){
                         const view = viewsStore.views.space[space.id];
 
-                        this.hydrateBoardTasks(view)
+                        this.hydrateTasks(view)
                     }
 
 
@@ -93,35 +89,35 @@ export const useTasksStore = defineStore('TasksStore',{
                 })
         },
 
-        toggleTaskLink(to,from, linked){
-            const method = linked ? 'delete' : 'post'
+        // toggleTaskLink(to,from, linked){
+        //     const method = linked ? 'delete' : 'post'
 
-            axios({url: `task/${from}/link/${to}`, method})
-            .then(res => {
+        //     axios({url: `task/${from}/link/${to}`, method})
+        //     .then(res => {
 
-                const fromTask = res.data.task;
-                const toTask = this.tasks.team.find(task => task.id === to) 
+        //         const fromTask = res.data.task;
+        //         const toTask = this.tasks.team.find(task => task.id === to) 
 
-                const {list, id} = fromTask;
+        //         const {list, id} = fromTask;
 
-                this.tasks.list[list.id] = this
-                                        .tasks[list.id]
-                                        .map(task => task.id === id ? fromTask : task)                   
+        //         this.tasks.list[list.id] = this
+        //                                 .tasks[list.id]
+        //                                 .map(task => task.id === id ? fromTask : task)                   
 
-                if(toTask.list.id in this.tasks.list && this.tasks.list[toTask.list.id].length){
-                    axios
-                        .get(`task/${to}`)
-                        .then(res => {
+        //         if(toTask.list.id in this.tasks.list && this.tasks.list[toTask.list.id].length){
+        //             axios
+        //                 .get(`task/${to}`)
+        //                 .then(res => {
 
-                            const newTask = res.data
+        //                     const newTask = res.data
 
-                            this.tasks.list[toTask.list.id] = this
-                                                            .tasks[toTask.list.id]
-                                                            .map(task => task.id === to ? newTask : task)
-                        })
-                }
-            })
-        },
+        //                     this.tasks.list[toTask.list.id] = this
+        //                                                     .tasks[toTask.list.id]
+        //                                                     .map(task => task.id === to ? newTask : task)
+        //                 })
+        //         }
+        //     })
+        // },
 
         attachTag(taskId, tag){
             axios.post(`task/${taskId}/tag/${tag.name}`)

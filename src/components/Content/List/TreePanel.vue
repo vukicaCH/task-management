@@ -25,11 +25,11 @@ const onCollapse = async (collapsed, listId) => {
 
     if(!view.value) await viewsStore.setView('list', listId);
 
-    if(!collapsed && !(listId in tasksStore.boardTasks.list)) tasksStore.hydrateBoardTasks(view.value)
+    if(!collapsed && !(listId in tasksStore.tasks.list)) tasksStore.hydrateTasks(view.value)
 }
 
 watchEffect(() => {
-    if(isList.value && !(list.id in tasksStore.boardTasks.list) && view.value) tasksStore.hydrateBoardTasks(view.value)
+    if(isList.value && !(list.id in tasksStore.tasks.list) && view.value) tasksStore.hydrateTasks(view.value)
 })
 </script>
 

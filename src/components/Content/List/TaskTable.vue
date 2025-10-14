@@ -7,7 +7,6 @@ import TaskTableNameEditor from './TaskTablePartials/TaskTableNameEditor.vue';
 import TaskTableAddTaskForm from './TaskTablePartials/TaskTableAddTaskForm.vue';
 import { Button } from 'primevue';
 import TaskTableNode from './TaskTablePartials/TaskTableNode.vue';
-import { useViewsStore } from '@/stores/viewsStore';
 
 const props = defineProps({
     listId:{
@@ -24,8 +23,8 @@ const isNewTasksFormOpen = ref(false)
 const toggleNewTaskForm = () => isNewTasksFormOpen.value = !isNewTasksFormOpen.value
 
 const tasks = computed(() => {
-    if(props.listId in tasksStore.boardTasks.list){
-        const treeTasks = buildTaskTree(tasksStore.boardTasks.list[props.listId])
+    if(props.listId in tasksStore.tasks.list){
+        const treeTasks = buildTaskTree(tasksStore.tasks.list[props.listId])
 
         if(isNewTasksFormOpen.value){
             return [{list_id: props.listId}, ...treeTasks] //this will allow us to add new task form inside table header
@@ -59,7 +58,7 @@ function buildTaskTree(tasks) {
     });
 }
 
-const loaded = computed(() => props.listId in tasksStore.boardTasks.list)
+const loaded = computed(() => props.listId in tasksStore.tasks.list)
 
 const getColHeader = (col) => {
     return col.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
