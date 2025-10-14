@@ -16,7 +16,7 @@ const spaceStore = useSpaceStore();
 
 <template>
     <div>
-        <div class="grid grid-cols-8 !mt-1">
+        <div class="grid grid-cols-8 !mt-1 hover:text-gray-500">
             <div
                 class="grid grid-cols-8 col-span-8 row-span-1 cursor-pointer items-center relative rounded-lg py-1 pr-1"
             >
