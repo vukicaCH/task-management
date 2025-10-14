@@ -74,8 +74,9 @@ const handleCancelClick = () => {
                 <Button
                     severity="secondary"
                     outlined
+                    @click="editMode = true"
                 >
-                    Add Task
+                    + Add Task
                 </Button>
             </div>
         </div>
