@@ -36,6 +36,8 @@ You can edit any task in list by simply clicking to a desired cell you want to c
 
 <img width="1456" height="772" alt="image" src="https://github.com/user-attachments/assets/a9883d71-36fd-480c-bc1d-9721c09434bc" />
 
+If you want to save the changes, just click away from the cell!
+
 2. Board
 
 If you want to edit board task, hover over it and you'll see the options.
