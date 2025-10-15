@@ -1,6 +1,6 @@
-# task management
+# ClickUp Task Management Clone with Vue3, Primevue, VueUse and Clickup API
 
-This template should help get you started developing with Vue 3 in Vite.
+[Live version](https://vukicach.github.io/task-management/) <--- Try application here.
 
 ## Recommended IDE Setup
 
