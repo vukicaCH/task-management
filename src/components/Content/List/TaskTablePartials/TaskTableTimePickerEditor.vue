@@ -1,5 +1,6 @@
 <script setup>
 import DatePicker from 'primevue/datepicker';
+import { Button } from 'primevue';
 import { watchEffect } from 'vue'
 import dayjs from 'dayjs';
 import { useTasksStore } from '@/stores/tasksStore';
@@ -57,7 +58,6 @@ watch(date, ()=> {
         show-button-bar
         show-icon
         :clear-button-props="{hidden: !date}"
-        @clear-click="date = ''"
         :placeholder="isReadOnly ? 'Read Only' : 'Select Date...'"
         input-class="max-w-[150px]"
         :disabled="isReadOnly"
@@ -69,7 +69,11 @@ watch(date, ()=> {
                 obj.state.d_value = date ? date : null
             }
         }"
-    />
+    >
+        <template v-if="date" #clearbutton>
+            <Button @click="date = ''" class="ignore">Clear</Button>
+        </template>
+    </DatePicker>
     <div v-else v-tooltip="`Read Only`" class="cursor-not-allowed flex items-center gap-1 text-gray-400">
         <div>
             <div v-if="date">{{ date }}</div>
